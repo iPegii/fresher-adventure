@@ -2,4 +2,4 @@ from flask import Flask
 
 app = Flask(__name__)
 
-import fresher_app.frontend
+import fresher_adventure_app.routes

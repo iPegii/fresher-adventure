@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Fuksisuunnistus {% endblock %}
+{% block content %}
+<div style="margin-left: 1rem;">
+<form>
+    <div class="form-group">
+        <div class="col-sm-3 my-1">
+            <label for="inputUsername">Email address</label>
+            <input type="email" class="form-control" id="inputUnsername"  placeholder="Username">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 my-1">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+        </div>
+    </div>
+    <div style="margin-left: 1rem;width: 22%;">
+        <div class="d-flex justify-content-between">
+          <button type="submit" name="signIn" class="btn btn-primary">Sign in</button>
+          <button type="submit" name="signUp" class="btn btn-secondary">Sign Up</button>
+        </div>
+    </div>
+    
+</form>
+</div>
+{% endblock %}

@@ -1,10 +1,8 @@
 {% extends "base.html" %}
+{% block title %} Fuksisuunnistus - sign up {% endblock %}
 {% block content %}
-{% if session.username %}
-
-{% else %}
 <div style="margin-left: 1rem;">
-    <form action="/login" method="POST" style="max-width: 13em">
+    <form style="max-width: 13em">
         <div class="form-group">
             <div>
                 {{ form.csrf_token }}
@@ -12,18 +10,24 @@
                 {{ form.username(size=20, class="form-control", placeholder="Username")}}
             </div>
             <div>
+                {{ form.email.label }}
+                {{ form.email(size=20, class="form-control", placeholder="Email") }}
+            </div>
+            <div>
                 {{ form.password.label }}
                 {{ form.password(size=20, class="form-control", placeholder="Password") }}
             </div>
+            <div>
+                {{ form.confirm.label }}
+                {{ form.confirm(size=20, class="form-control", placeholder="Password") }}
+            </div>
         </div>
         <div>
-            <div class="d-flex justify-content-between">
-                <button type="submit" name="submit_button" value="signIn" class="btn btn-primary">Sign in</button>
-                <button type="submit" name="submit_button" value="signUp" class="btn btn-secondary">Sign Up</button>
+            <div>
+                <button type="submit" name="signUp" class="btn btn-primary btn-block">Sign Up</button>
             </div>
         </div>
 
     </form>
 </div>
-{% endif %}
 {% endblock %}

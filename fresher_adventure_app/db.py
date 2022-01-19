@@ -1,4 +1,13 @@
-from app import db
+from os import getenv
+from fresher_adventure_app import app
+from flask_sqlalchemy import SQLAlchemy
+
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv(
+    "DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = getenv("SECRET_KEY")
+db = SQLAlchemy(app)
+db.create_all()
 
 
 class User(db.Model):
@@ -6,9 +15,9 @@ class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Varchar(25), nullable=False)
-    password = db.Column(db.Varchar(26), nullable=False)
-    email = db.Column(db.Varchar(255), nullable=False)
+    name = db.Column(db.String(25), nullable=False)
+    password = db.Column(db.String(26), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
     permission = db.Column(
         db.Integer, db.ForeignKey('permission.id'),
         nullable=False)
@@ -70,8 +79,8 @@ class Checkpoint(db.Model):
     __tablename__ = 'checkpoint'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Varchar(50), nullable=True)
-    description = db.Column(db.Varchar(1000), nullable=True)
+    name = db.Column(db.String(50), nullable=True)
+    description = db.Column(db.String(1000), nullable=True)
     can_be_visible = db.Column(db.Boolean, nullable=False)
     location_id = db.Column(
         db.Integer, db.ForeignKey('location.id'),

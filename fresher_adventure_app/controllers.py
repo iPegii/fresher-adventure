@@ -1,10 +1,10 @@
 from os import getenv
 from flask import render_template, request, redirect, Blueprint, url_for, g, session, flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from app import db
-from app import app
-from app.form import LoginForm, RegisterForm
-from app.module.models import User
+from fresher_adventure_app import app
+from fresher_adventure_app import db
+from fresher_adventure_app.form import LoginForm, RegisterForm
+from fresher_adventure_app.db import User
 app.secret_key = getenv("SECRET_KEY")
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth

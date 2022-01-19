@@ -8,20 +8,22 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light"
-    style="background-color: #e3f2fd; margin: 1rem 1rem 1rem 1rem; border-radius: 15px;">
-    <a class="navbar-brand" href="/">Fuksisuunnistus</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" style="color: #878787; font-size: medium;" href="#">Rastit</a>
-        <a class="nav-item nav-link" style="color: #878787; font-size: medium;" href="#">About</a>
+  <div style="margin-bottom: 2em;">
+    <nav class="navbar navbar-expand-lg navbar-light"
+      style="background-color: #E6E6E6;box-shadow: 0em 0.1em 1rem #c0c0c0;">
+      <a class="navbar-brand" href="/" style="color: #000000; font-size: larger;">Fuksisuunnistus</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" style="color: #878787; font-size: medium;" href="#">Rastit</a>
+          <a class="nav-item nav-link" style="color: #878787; font-size: medium;" href="#">About</a>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
   {% block content%}
   {% endblock%}
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

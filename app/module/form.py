@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 
 
 class RegisterForm(FlaskForm):
+    """Register form for the website"""
     username = StringField(
         'Username', [validators.Length(min=4, max=25)])
     email = EmailField(
@@ -18,6 +19,7 @@ class RegisterForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """Login form for the website"""
     username = StringField(
         'Username', [validators.Length(min=4, max=25)])
     password = PasswordField(

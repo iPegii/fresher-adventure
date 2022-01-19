@@ -1,0 +1,185 @@
+from app import db
+
+
+class User(db.Model):
+    """Database model for User"""
+    __tablename__ = 'user'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Varchar(25), nullable=False)
+    password = db.Column(db.Varchar(26), nullable=False)
+    email = db.Column(db.Varchar(255), nullable=False)
+    permission = db.Column(
+        db.Integer, db.ForeignKey('permission.id'),
+        nullable=False)
+    modified_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, onupdate=db.func.now())
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, server_default=db.func.now())
+
+    def __init__(
+            self, name, password, email, permission,
+            modified_at, created_at):
+        self.name = name
+        self.password = password
+        self.email = email
+        self.permission = permission
+        self.modified_at = modified_at
+        self.created_at = created_at
+
+    def __repr__(self):
+        return f"<name {self.name}>"
+
+
+class Permission(db.Model):
+    """Database model for Permission"""
+    __tablename__ = 'permission'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('user.id'),
+        nullable=False)
+    permission = db.Column(db.Integer, nullable=False)
+    checkpoint_id = db.Column(
+        db.Integer, db.ForeignKey('checkpoint.id'),
+        nullable=False)
+    modified_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, onupdate=db.func.now())
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, server_default=db.func.now())
+
+    def __init__(
+            self, user_id, permission, checkpoint_id,
+            modified_at, created_at):
+        self.user_id = user_id
+        self.permission = permission
+        self.checkpoint_id = checkpoint_id
+        self.modified_at = modified_at
+        self.created_at = created_at
+
+    def __repr__(self):
+        return f"<permission {self.permission}>"
+
+
+class Checkpoint(db.Model):
+    """Database model for Checkpoint"""
+    __tablename__ = 'checkpoint'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Varchar(50), nullable=True)
+    description = db.Column(db.Varchar(1000), nullable=True)
+    can_be_visible = db.Column(db.Boolean, nullable=False)
+    location_id = db.Column(
+        db.Integer, db.ForeignKey('location.id'),
+        nullable=False)
+    modified_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, onupdate=db.func.now())
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, server_default=db.func.now())
+
+    def __init__(
+            self, name, description, can_be_visible,
+            location_id, modified_at, created_at):
+        self.name = name
+        self.description = description
+        self.can_be_visible = can_be_visible
+        self.location_id = location_id
+        self.modified_at = modified_at
+        self.created_at = created_at
+
+    def __repr__(self):
+        return f"<name {self.name}>"
+
+
+class Point(db.Model):
+    """Database model for Point"""
+    __tablename__ = 'point'
+
+    id = db.Column(db.Integer, primary_key=True)
+    point = db.Column(db.Integer, nullable=False)
+    checkpoint_id = db.Column(
+        db.Integer, db.ForeignKey('checkpoint.id'),
+        nullable=False)
+    team_id = db.Column(
+        db.Integer, db.ForeignKey('team.id'),
+        nullable=False)
+    modified_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, onupdate=db.func.now())
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, server_default=db.func.now())
+
+    def __init__(
+            self, point, checkpoint_id, team_id,
+            modified_at, created_at):
+        self.point = point
+        self.checkpoint_id = checkpoint_id
+        self.team_id = team_id
+        self.modified_at = modified_at
+        self.created_at = created_at
+
+    def __repr__(self):
+        return f"<point {self.point}>"
+
+
+class Team(db.Model):
+    """Database model for Team"""
+    __tablename__ = 'team'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    modified_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, onupdate=db.func.now())
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, server_default=db.func.now())
+
+    def __init__(
+            self, name,
+            modified_at, created_at):
+        self.name = name
+        self.modified_at = modified_at
+        self.created_at = created_at
+
+    def __repr__(self):
+        return f"<name {self.name}>"
+
+
+class Location(db.Model):
+    """Database model for Location"""
+    __tablename__ = 'location'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    checkpoint_id = db.Column(
+        db.Integer, db.ForeignKey('checkpoint.id'),
+        nullable=False)
+    modified_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, onupdate=db.func.now())
+    created_at = db.Column(
+        db.TIMESTAMP(timezone=True),
+        nullable=False, server_default=db.func.now())
+
+    def __init__(
+            self, name, longitude, latitude, checkpoint_id,
+            modified_at, created_at):
+        self.name = name
+        self.longitude = longitude
+        self.latitude = latitude
+        self.checkpoint_id = checkpoint_id
+        self.modified_at = modified_at
+        self.created_at = created_at
+
+    def __repr__(self):
+        return f"<name {self.name}>"

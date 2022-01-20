@@ -1,11 +1,17 @@
-from os import getenv
-from flask import render_template, request, redirect, Blueprint, url_for, g, session, flash
+from flask import render_template, request, redirect, session, flash, Blueprint
 from werkzeug.security import check_password_hash, generate_password_hash
-from fresher_adventure_app import app
-from fresher_adventure_app import db
-from fresher_adventure_app.form import LoginForm, RegisterForm
-from fresher_adventure_app.db import User
-app.secret_key = getenv("SECRET_KEY")
+from app import app
+from os import getenv
+from app.models import db
+from app.form import LoginForm, RegisterForm
+from app.models import User
+import logging
+logging.basicConfig()
+logging.getLogger(
+    'sqlalchemy.engine').setLevel(logging.INFO)
+
+
+mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @app.route("/")
@@ -26,14 +32,23 @@ def page2():
 
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
+    print('wow')
     if request.method == "POST":
         form = RegisterForm(request.form)
-        user = User.query.filter_by(
-            email=form.email.data, user=form.username.data).first()
+        username = form.username.data
+        email = form.email.data
+        print(getenv('DATABASE_URL'))
+        user = User.query.filter(
+            (User.email == email) | (User.name == username)).first()
         if user is None:
-            hashed_password = generate_password_hash(form.password)
-            new_user = User(username=form.username, email=form.email,
-                            password=hashed_password, permission=0)
+            print('success')
+            hashed_password = generate_password_hash(
+                form.password.data)
+            new_user = User(
+                name=username, email=email,
+                password=hashed_password,
+                modified_at=db.func.now(),
+                created_at=db.func.now())
             db.session.add(new_user)
             db.session.commit()
             return redirect("/")
@@ -50,8 +65,10 @@ def login():
     if request.method == 'POST':
         if request.form["submit_button"] == "signIn":
             form = LoginForm(request.form)
-            user = User.query.filter_by(
-                email=form.email.data).first()
+            username = form.username.data
+            user = User.query.filter(
+                (username == User.name) |
+                (username == User.email)).first()
             if user and check_password_hash(
                     user.password, form.password.data):
                 session['username'] = user.name
@@ -60,7 +77,8 @@ def login():
         elif request.form["submit_button"] == "signUp":
             form = RegisterForm(request.form)
             return render_template(
-                "signup.html", username=form.username.data, form=form)
+                "signup.html", username=form.username.data,
+                form=form)
         else:
             return redirect("/")
     else:

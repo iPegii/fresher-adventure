@@ -1,16 +1,15 @@
 CREATE TABLE user (
     id SERIAL PRIMARY KEY,
     name VARCHAR(25),
-    password VARCHAR(26),
+    password TEXT,
     email VARCHAR(255),
-    permission_id INT,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modifed_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
 );
 CREATE TABLE permission (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    permission INTEGER NOT NULL,
+    permission INTEGER DEFAULT 1 NOT NULL,
     checkpoint_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modifed_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()

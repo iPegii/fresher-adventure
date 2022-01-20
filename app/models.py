@@ -1,26 +1,16 @@
-from os import getenv
-from fresher_adventure_app import app
+from app import app
 from flask_sqlalchemy import SQLAlchemy
 
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv(
-    "DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
-db.create_all()
 
 
 class User(db.Model):
     """Database model for User"""
-    __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), nullable=False)
-    password = db.Column(db.String(26), nullable=False)
+    password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(255), nullable=False)
-    permission = db.Column(
-        db.Integer, db.ForeignKey('permission.id'),
-        nullable=False)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -29,12 +19,11 @@ class User(db.Model):
         nullable=False, server_default=db.func.now())
 
     def __init__(
-            self, name, password, email, permission,
+            self, name, password, email,
             modified_at, created_at):
         self.name = name
         self.password = password
         self.email = email
-        self.permission = permission
         self.modified_at = modified_at
         self.created_at = created_at
 
@@ -44,16 +33,16 @@ class User(db.Model):
 
 class Permission(db.Model):
     """Database model for Permission"""
-    __tablename__ = 'permission'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id'),
         nullable=False)
-    permission = db.Column(db.Integer, nullable=False)
+    permission = db.Column(
+        db.Integer, nullable=False, default=0)
     checkpoint_id = db.Column(
         db.Integer, db.ForeignKey('checkpoint.id'),
-        nullable=False)
+        nullable=True)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -76,7 +65,6 @@ class Permission(db.Model):
 
 class Checkpoint(db.Model):
     """Database model for Checkpoint"""
-    __tablename__ = 'checkpoint'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=True)
@@ -108,7 +96,6 @@ class Checkpoint(db.Model):
 
 class Point(db.Model):
     """Database model for Point"""
-    __tablename__ = 'point'
 
     id = db.Column(db.Integer, primary_key=True)
     point = db.Column(db.Integer, nullable=False)
@@ -140,7 +127,6 @@ class Point(db.Model):
 
 class Team(db.Model):
     """Database model for Team"""
-    __tablename__ = 'team'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -164,7 +150,6 @@ class Team(db.Model):
 
 class Location(db.Model):
     """Database model for Location"""
-    __tablename__ = 'location'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)

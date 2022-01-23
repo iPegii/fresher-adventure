@@ -18,7 +18,7 @@ CREATE TABLE checkpoint (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50),
     description VARCHAR(1000),
-    canBeVisible boolean NOT NULL,
+    canBeVisible boolean DEFAULT False NOT NULL,
     location_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modifed_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()

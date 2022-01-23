@@ -69,7 +69,7 @@ class Checkpoint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=True)
     description = db.Column(db.String(1000), nullable=True)
-    can_be_visible = db.Column(db.Boolean, nullable=False)
+    can_be_visible = db.Column(db.Boolean, nullable=False, default=False)
     location_id = db.Column(
         db.Integer, db.ForeignKey('location.id'),
         nullable=False)

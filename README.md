@@ -1,8 +1,15 @@
 # Fuksisuunnistus
 
+Sovellus löytyy myös [Herokusta](https://fresher-adventure.herokuapp.com/)
+
+## Ominaisuudet
+
+Ominaisuuksista voi lukea lisää [täältä](./docs/features)
+
 ## Tarkoitus
 
 Sovelluksen tarkoituksena on helpottaa fuksisuunnistuksen järjestämistä toimimalla käyttöliittymänä niin rastinkiertäjille,-pitäjille kuin myös tapahtuman vastuuhenkilölle.
+
 
 ### Rastinkiertäjät
 

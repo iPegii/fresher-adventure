@@ -4,7 +4,7 @@ Sovellus löytyy myös [Herokusta](https://fresher-adventure.herokuapp.com/)
 
 ## Ominaisuudet
 
-Ominaisuuksista voi lukea lisää [täältä](./docs/features)
+Ominaisuuksista voi lukea lisää [täältä](./docs/features.md)
 
 ## Tarkoitus
 
@@ -26,4 +26,4 @@ Katso kaikkien tiimien pisteet
 
 ## Tietokanta
 
-[Lisää tietoa täältä](./docs/database)
+Lisää tietoa [täältä](./docs/database.md)

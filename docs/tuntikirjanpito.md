@@ -8,5 +8,7 @@ Päivä   |Aika| Mitä tein
 16.1.   |  5 | Lomakkeiden päivittelyä ja tietokannan suunnittelua
 17.1.   |  2 | Tietokannan säätöä
 18.1.   |  3 | Sovelluksen rakenteen päivittelyä järkevämmäksi
+19.1.   |  3 | Lisätään käyttäjän luominen
+23.1.   |  1 | Dokumentaation parantelua
 
-Yhteensä| 14 |
+Yhteensä| 18 |

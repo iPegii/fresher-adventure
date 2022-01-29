@@ -10,5 +10,6 @@ Päivä   |Aika| Mitä tein
 18.1.   |  3 | Sovelluksen rakenteen päivittelyä järkevämmäksi
 19.1.   |  3 | Lisätään käyttäjän luominen
 23.1.   |  1 | Dokumentaation parantelua
+29.1.   |  5 | Hallinnointi-paneelin lisäämistä
 
-Yhteensä| 18 |
+Yhteensä| 23 |

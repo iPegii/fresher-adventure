@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 
 
-class User(db.Model):
+class Users(db.Model):
     """Database model for User"""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -36,13 +36,12 @@ class Permission(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey('user.id'),
+        db.Integer, db.ForeignKey('users.id'),
         nullable=False)
     permission = db.Column(
         db.Integer, nullable=False, default=0)
     checkpoint_id = db.Column(
-        db.Integer, db.ForeignKey('checkpoint.id'),
-        nullable=True)
+        db.Integer)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -69,7 +68,8 @@ class Checkpoint(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=True)
     description = db.Column(db.String(1000), nullable=True)
-    can_be_visible = db.Column(db.Boolean, nullable=False, default=False)
+    can_be_visible = db.Column(
+        db.Boolean, nullable=False, default=False)
     location_id = db.Column(
         db.Integer, db.ForeignKey('location.id'),
         nullable=False)

@@ -28,3 +28,4 @@ typing-extensions==4.0.1
 Werkzeug==2.0.2
 wrapt==1.13.3
 WTForms==3.0.1
+fontawesome-free==5.15.4

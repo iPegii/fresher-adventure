@@ -5,22 +5,32 @@ from flask_wtf import FlaskForm
 class RegisterForm(FlaskForm):
     """Register form for the website"""
     username = StringField(
-        'Username', [validators.Length(min=4, max=25)])
+        'Käyttäjätunnus',
+        [validators.Length(min=4, max=25)])
     email = EmailField(
-        'Email',
+        'Sähköposti',
         [validators.Email(), validators.DataRequired()])
     password = PasswordField(
-        'Password',
+        'Salasana',
         [validators.Length(min=8, max=26),
          validators.DataRequired(),
          validators.EqualTo(
-             'confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
+             'confirm',
+             message='Salasanojen pitää olla samat')])
+    confirm = PasswordField('Toista salasana')
 
 
 class LoginForm(FlaskForm):
     """Login form for the website"""
     username = StringField(
-        'Username', [validators.Length(min=4, max=25)])
+        'Käyttäjätunnus',
+        [validators.Length(min=4, max=25)])
     password = PasswordField(
-        'Password', [validators.Length(min=8, max=26)])
+        'Salasana', [validators.Length(min=8, max=26)])
+
+
+class CheckpointCreationForm(FlaskForm):
+    """Creation of new checkpoints"""
+    name = StringField(
+        'Rastin nimi',
+        [validators.Length(min=4, max=50)])

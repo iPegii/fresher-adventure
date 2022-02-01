@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="display: flex; flex-direction: row; justify-content: space-around;">
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
     <div name="user panel">
         {% if users %}
         <h2>Käyttäjät</h2>
-        <div style="margin-left: 1rem;">
-            <ul>
+        <div>
+            <ul style="list-style-type: none;padding: 0; margin: 0;">
                 {% for user in users%}
                 <li>
                     <div>
-                        <spam>{{user.name}}</span>
-                            <select name="checkpoints">
-                                <option disabled selected value> -- select an option -- </option>
-                                {% for checkpoint in checkpoints%}
-                                <option value={{checkpoint.name}}>{{checkpoint.name}}</option>
-                                {% endfor %}
-                            </select>
+                        <span>{{user.name}}</span>
+                        <select name="checkpoints">
+                            <option disabled selected value> -- Valitse rasti -- </option>
+                            {% for checkpoint in checkpoints%}
+                            <option value={{checkpoint.name}}>{{checkpoint.name}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </li>
                 {% endfor %}
@@ -29,7 +29,7 @@
         {% if checkpoints %}
         <h2 style="text-align: center;">Rastit</h2>
         <div style="margin-left: 1rem;">
-            <ul>
+            <ul style="list-style-type: none;padding: 0; margin: 0;">
                 {% for checkpoint in checkpoints%}
                 <li>
                     <p>{{checkpoint.name}}</p>

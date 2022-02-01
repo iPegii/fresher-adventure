@@ -16,9 +16,13 @@ mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 @app.route("/")
 def index():
+    #
+    #    if session["permission"] == 1000:
+    #        return render_template("checkpoint.html", )
+    #
     form = LoginForm()
     return render_template(
-        "index.html", form=form, test="wow")
+        "index.html", form=form)
 
 
 @app.route("/manage", methods=["POST", "GET"])

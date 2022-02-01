@@ -78,11 +78,9 @@ def sign_up():
         form = RegisterForm(request.form)
         username = form.username.data
         email = form.email.data
-        print(getenv('DATABASE_URL'))
         user = User.query.filter(
             (User.email == email) | (User.name == username)).first()
         if user is None:
-            print('success')
             hashed_password = generate_password_hash(
                 form.password.data)
             new_user = User(

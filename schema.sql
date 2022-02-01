@@ -23,14 +23,6 @@ CREATE TABLE checkpoint (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
 );
-CREATE TABLE point (
-    id SERIAL PRIMARY KEY,
-    checkpoint_id INTEGER REFERENCES checkpoint NOT NULL,
-    team_id INTEGER REFERENCES team NOT NULL,
-    point_amount INTEGER NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
-    modified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
-);
 CREATE TABLE team (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -43,6 +35,14 @@ CREATE TABLE location (
     longitude float8 NOT NULL,
     latitude float8 NOT NULL,
     checkpoint_id INTEGER REFERENCES checkpoint,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
+    modified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
+);
+CREATE TABLE point (
+    id SERIAL PRIMARY KEY,
+    checkpoint_id INTEGER REFERENCES checkpoint NOT NULL,
+    team_id INTEGER REFERENCES team NOT NULL,
+    point_amount INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
 );

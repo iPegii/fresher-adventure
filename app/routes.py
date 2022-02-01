@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import render_template, request, redirect, session, Blueprint
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
@@ -9,7 +10,6 @@ import logging
 logging.basicConfig()
 logging.getLogger(
     'sqlalchemy.engine').setLevel(logging.INFO)
-
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -74,6 +74,7 @@ def logout():
 
 @ app.route("/signup", methods=["GET", "POST"])
 def sign_up():
+    print(getenv("SQLALCHEMY_DATABASE_URL"))
     if request.method == "POST":
         form = RegisterForm(request.form)
         username = form.username.data

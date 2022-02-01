@@ -6,9 +6,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
+uri = getenv("DATABASE_URL")  # or other relevant config var
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = uri
 app.config["SQLALCHEMY_ECHO"] = False
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = getenv("SECRET_KEY")
 
-from app import routes
+from app import routes  # noqa: F401

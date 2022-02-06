@@ -8,9 +8,9 @@ class Users(db.Model):
     """Database model for User"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), nullable=False)
+    name = db.Column(db.String(25), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False, unique=True)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -66,7 +66,7 @@ class Checkpoint(db.Model):
     """Database model for Checkpoint"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=True)
+    name = db.Column(db.String(50), nullable=True, unique=True)
     description = db.Column(db.String(1000), nullable=True)
     can_be_visible = db.Column(
         db.Boolean, nullable=False, default=False)
@@ -129,7 +129,7 @@ class Team(db.Model):
     """Database model for Team"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(50), nullable=False, unique=True)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())

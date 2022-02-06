@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+    <div name="user panel">
+        {% if users %}
+        <h2>Käyttäjät</h2>
+        <div>
+            <ul style="list-style-type: none;padding: 0; margin: 0;">
+                {% for user in users%}
+                <li>
+                    <div>
+                        <span>{{user.name}}</span>
+                        <select name="checkpoints">
+                            <option disabled selected value> -- Valitse rasti -- </option>
+                            {% for checkpoint in checkpoints%}
+                            <option value={{checkpoint.name}}>{{checkpoint.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <h2>Ei käyttäjiä</h2>
+        {% endif %}
+    </div>
+    <div name="checkpoint panel" style="width: 20em;">
+        {% if checkpoints %}
+        <h2 style="text-align: center;">Rastit</h2>
+        <div style="margin-left: 1rem;">
+            <ul style="list-style-type: none;padding: 0; margin: 0;">
+                {% for checkpoint in checkpoints%}
+                <li>
+                    <p>{{checkpoint.name}}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <h2 style="text-align: center;">Ei rasteja</h2>
+        {% endif %}
+        <div style="margin: auto;width: fit-content;">
+            <form action="/checkpoint-manage" method="POST">
+                <div class="form-group">
+
+                    {{ form.name.label }}
+                    <div style="flex-direction: row; display: flex; align-items: center;">
+                        {{ form.name(size=20, class="form-control", placeholder="Rastin nimi")}}
+                        <button type="submit" class="btn" name="new checkpoint">
+                            <i style="color: #2ccc1b;" class="fas fa-plus-circle fa-2x"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

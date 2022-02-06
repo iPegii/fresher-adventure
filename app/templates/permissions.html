@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+    <div name="user panel">
+        {% if users %}
+        <h2>Käyttäjät</h2>
+        <div>
+            <ul style="list-style-type: none;padding: 0; margin: 0;">
+                {% for user in users%}
+                <li>
+                    <div>
+                        <span>{{user.name}}</span>
+                        <select name="checkpoints">
+                            {% if user.permission %}
+                            {% if user.permission == 1 %}
+                            <option selected disabled value={{user.permission}}> Käyttäjä </option>
+                            {% elif user.permission == 2 %}
+                            <option selected disabled value={{user.permission}}> Rastinpitäjä </option>
+                            {% elif user.permission == 1000 %}
+                            <option selected disabled value={{user.permission}}> Ylläpitäjä </option>
+                            {%endif%}
+                            {% else %}
+                            <option disabled selected value> -- Valitse oikeus -- </option>
+                            {% endif %}
+                            <option value=1>Käyttäjä</option>
+                            <option value=2>Rastinpitäjä</option>
+                            <option value=1000>Ylläpitäjä</option>
+                        </select>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <h2>Ei käyttäjiä</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -19,41 +19,40 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div style="width: 7em;margin-left: auto;">
-          <div class="navbar-nav">
-            <ul style="list-style-type: none;padding: 0; margin: 0;justify-content: left; text-align: left;">
-              {% if session.permission and session.permission >= 2 %}
-              <li class="nav-item">
-                <a class="nav-link" style="color: #383838; font-size: medium;" href="/checkpoint">Rastit</a>
-              </li>
-              {% endif %}
-              {% if session.permission and session.permission == 1000 %}
-              <li class="nav-item">
-                <a class="nav-link" style="color: #383838; font-size: medium;" href="/manage">Hallinnointi</a>
-              </li>
-              {% endif %}
-            </ul>
-            <a class="nav-item nav-link" style="color: #383838; font-size: large;" href="/logout">Kirjaudu ulos</a>
-          </div>
-        </div>
+        <ul class="navbar-nav mr-auto"
+          style="list-style-type: none;padding: 0; margin: 0;justify-content: left; text-align: left; display: flex; flex-direction: row;">
+          {% if session.permission and session.permission >= 2 %}
+          <li class="nav-item">
+            <a class="nav-link" style="color: #383838; font-size: medium;" href="/checkpoint">Rastit</a>
+          </li>
+          {% endif %}
+          {% if session.permission and session.permission == 1000 %}
+          <li class="nav-item">
+            <a class="nav-link" style="color: #383838; font-size: medium;" href="/manage">Hallinnointi</a>
+          </li>
+          {% endif %}
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" style="color: #383838; font-size: large;" href="/logout">Kirjaudu
+              ulos</a>
+          </li>
+        </ul>
       </div>
     </nav>
   </div>
   <div style="margin: 2em 5em 0em 5em;">
     {% block content%}
     {% endblock%}
-  </div>
-  <div name="footer" style="position: fixed; bottom: 0; background-color: #6e6b65; width: 100%;height: 3.5em;">
-  </div>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -1,7 +1,6 @@
 from flask import render_template, request, redirect, session, Blueprint
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app
-from os import getenv
 from app.models import db
 from app.form import LoginForm, RegisterForm, CheckpointCreationForm, TeamCreationForm
 from app.models import Users as User, Permission, Checkpoint, Team
@@ -16,9 +15,11 @@ mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 @app.route("/")
 def index():
 
-    if session.get('permission') == 2:
+    if session.get("permission") == 2:
         teams = Team.query.all()
         return render_template("checkpoint-manage.html", teams=teams)
+    elif session.get("permission") == 1000:
+        return redirect("/checkpoint")
     else:
         form = LoginForm()
         return render_template(
@@ -28,16 +29,19 @@ def index():
 @app.route("/permissions", methods=["GET", "POST"])
 def permissions_manage():
 
-    if session.get('permission') == 1000:
-        if request.method == "GET":
-            users = User.query.join(Permission).add_columns(User.id, User.name, Permission.user_id, Permission.permission).filter(
-                User.id == Permission.user_id)
+    if session.get("permission") is not None:
+        if session.get('permission') == 1000:
+            if request.method == "GET":
+                users = User.query.join(Permission).add_columns(User.id, User.name, Permission.user_id, Permission.permission).filter(
+                    User.id == Permission.user_id)
 
-            for user in users:
-                print(user)
-            return render_template("permissions.html", users=users)
-
+                for user in users:
+                    print(user)
+                return render_template("permissions.html", users=users)
+        else:
+            return redirect("/")
     else:
+        session["next_url"] = request.path
         return redirect("/")
 
 
@@ -75,6 +79,7 @@ def manage_checkpoint():
             "checkpoint-manage.html", form=emptyForm,
             users=users, checkpoints=checkpoints)
     else:
+        session["next_url"] = request.path
         return redirect("/")
 
 
@@ -115,19 +120,18 @@ def manage_team():
             "team-manage.html", form=emptyForm,
             users=users, teams=teams)
     else:
+        session["next_url"] = request.path
         return redirect("/")
 
 
 @ app.route("/logout")
 def logout():
-    del session["username"]
-    del session["permission"]
+    session.clear()
     return redirect("/")
 
 
 @ app.route("/signup", methods=["GET", "POST"])
 def sign_up():
-    print(getenv("SQLALCHEMY_DATABASE_URL"))
     if request.method == "POST":
         form = RegisterForm(request.form)
         username = form.username.data
@@ -174,6 +178,11 @@ def login():
                 permission = Permission.query.filter(
                     Permission.user_id == user.id).first()
                 session['permission'] = permission.permission
+                session.permanent = True
+                next_url = session.get("next_url")
+                if next_url is not None:
+                    session.pop('next_url', default=None)
+                    return redirect(next_url)
                 return redirect("/")
             else:
                 return redirect("/")

@@ -28,7 +28,7 @@ class Users(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<name {self.name}>"
+        return f"<User {self.name}>"
 
 
 class Permission(db.Model):
@@ -41,7 +41,8 @@ class Permission(db.Model):
     permission = db.Column(
         db.Integer, nullable=False, default=0)
     checkpoint_id = db.Column(
-        db.Integer)
+        db.Integer, db.ForeignKey('checkpoint.id'),
+        nullable=True)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -91,7 +92,7 @@ class Checkpoint(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<name {self.name}>"
+        return f"<Checkpoint %r> % {self.name}"
 
 
 class Point(db.Model):
@@ -122,7 +123,7 @@ class Point(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<point {self.point}>"
+        return f"<Point {self.point}>"
 
 
 class Team(db.Model):
@@ -145,7 +146,7 @@ class Team(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<name {self.name}>"
+        return f"<Team {self.name}>"
 
 
 class Location(db.Model):
@@ -176,4 +177,4 @@ class Location(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<name {self.name}>"
+        return f"<Location {self.name}>"

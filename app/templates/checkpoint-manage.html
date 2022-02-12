@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="display: flex; flex-direction: row; justify-content: space-between;">
+<div
+    style="display: flex; flex-direction: row; justify-content: space-between;">
     <div name="user panel">
         {% if users %}
         <h2>Käyttäjät</h2>
@@ -9,11 +10,23 @@
                 {% for user in users%}
                 <li>
                     <div>
-                        <span>{{user.name}}</span>
+                        <span>{{user.user_name}}</span>
                         <select name="checkpoints">
-                            <option disabled selected value> -- Valitse rasti -- </option>
+                            {% if user.checkpoint_name == None %}
+                            <option id="default-value" disabled selected value>
+                                -- Valitse rasti
+                                -- </option>
+                            {% else %}
+                            <option id="default-value" disabled selected
+                                value={user.checkpoint_id}>
+                                {{user.checkpoint_name}} </option>
+                            {% endif %}
                             {% for checkpoint in checkpoints%}
-                            <option value={{checkpoint.name}}>{{checkpoint.name}}</option>
+                            {% if checkpoint.name != None %}
+                            <option id="choose-checkpoint"
+                                value={{checkpoint.name}}>
+                                {{checkpoint.name}}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -30,10 +43,12 @@
         <h2 style="text-align: center;">Rastit</h2>
         <div style="margin-left: 1rem;">
             <ul style="list-style-type: none;padding: 0; margin: 0;">
-                {% for checkpoint in checkpoints%}
+                {% for user in users%}
+                {% if user.checkpoint_name != None %}
                 <li>
-                    <p>{{checkpoint.name}}</p>
+                    <p>{{user.checkpoint_name}}</p>
                 </li>
+                {% endif %}
                 {% endfor %}
             </ul>
         </div>
@@ -41,14 +56,18 @@
         <h2 style="text-align: center;">Ei rasteja</h2>
         {% endif %}
         <div style="margin: auto;width: fit-content;">
-            <form action="/checkpoint-manage" method="POST">
+            <form action="/checkpoint" method="POST">
                 <div class="form-group">
 
                     {{ form.name.label }}
-                    <div style="flex-direction: row; display: flex; align-items: center;">
-                        {{ form.name(size=20, class="form-control", placeholder="Rastin nimi")}}
-                        <button type="submit" class="btn" name="new checkpoint">
-                            <i style="color: #2ccc1b;" class="fas fa-plus-circle fa-2x"></i>
+                    <div
+                        style="flex-direction: row; display: flex; align-items: center;">
+                        {{ form.name(size=20, class="form-control",
+                        placeholder="Rastin nimi")}}
+                        <button type="submit" class="btn"
+                            name="new checkpoint">
+                            <i style="color: #2ccc1b;"
+                                class="fas fa-plus-circle fa-2x"></i>
                         </button>
                     </div>
                 </div>

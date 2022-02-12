@@ -34,7 +34,7 @@ def permissions_manage():
                 User.id == Permission.user_id)
 
             for user in users:
-                print(user.permission)
+                print(user)
             return render_template("permissions.html", users=users)
 
     else:
@@ -43,15 +43,17 @@ def permissions_manage():
 
 @app.route("/checkpoint", methods=["POST", "GET"])
 def manage_checkpoint():
-    user_permission = session["permission"]
+    user_permission = session.get('permission')
     if(user_permission == 1000):
         if(request.method == "GET"):
-            users = User.query.all()
+            users = User.query.outerjoin(Permission, User.id == Permission.user_id).outerjoin(Checkpoint, Checkpoint.id == Permission.checkpoint_id).add_columns(User.id, User.name.label("user_name"), Permission.user_id, Permission.permission,
+                                                                                                                                                                 Permission.checkpoint_id, Checkpoint.id, Checkpoint.name.label("checkpoint_name")).all()
             checkpoints = Checkpoint.query.all()
+            for check in users:
+                print(check)
             checkpoint_form = CheckpointCreationForm()
             return render_template(
-                "checkpoint-manage.html", form=checkpoint_form,
-                users=users, checkpoints=checkpoints)
+                "checkpoint-manage.html", form=checkpoint_form, checkpoints=checkpoints, users=users)
         if(request.method == "POST"):
             form = CheckpointCreationForm(request.form)
             checkpoint_name = form.name.data
@@ -78,7 +80,7 @@ def manage_checkpoint():
 
 @ app.route("/team", methods=["POST", "GET"])
 def manage_team():
-    user_permission = session["permission"]
+    user_permission = session.get('permission')
     if(user_permission == 1000):
         users = User.query.all()
         teams = Team.query.all()

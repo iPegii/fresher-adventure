@@ -28,6 +28,16 @@
           {% endif %}
           {% if session.permission and session.permission == 1000 %}
           <li class="nav-item">
+            <a class="nav-link" style="color: #383838; font-size: medium;" href="/team">Joukkueet</a>
+          </li>
+          {% endif %}
+          {% if session.permission and session.permission == 1000 %}
+          <li class="nav-item">
+            <a class="nav-link" style="color: #383838; font-size: medium;" href="/checkpoint">Rastit</a>
+          </li>
+          {% endif %}
+          {% if session.permission and session.permission == 1000 %}
+          <li class="nav-item">
             <a class="nav-link" style="color: #383838; font-size: medium;" href="/manage">Hallinnointi</a>
           </li>
           {% endif %}

@@ -59,7 +59,7 @@ def manage_checkpoint():
             return render_template(
                 "checkpoint-manage.html", checkpoint_adding_form=checkpoint_adding_form, checkpoints=checkpoints, users=users)
         if(request.method == "POST"):
-            if request.form["submit_button"] == "save_checkpoint":
+            if request.form.get("submit_button") == "save_checkpoint":
                 checkpoint_data = request.form.get("checkpoint_select", "")
                 checkpoint_data_filtered = checkpoint_data.split(",")
                 temp_user_permission = Permission.query.get(
@@ -79,12 +79,7 @@ def manage_checkpoint():
                         created_at=db.func.now())
                     db.session.add(new_checkpoint)
                     db.session.commit()
-                users = User.query.all()
-                checkpoints = Checkpoint.query.all()
-                emptyForm = CheckpointCreationForm()
-                return render_template(
-                    "checkpoint-manage.html", form=emptyForm,
-                    users=users, checkpoints=checkpoints)
+                return redirect("/")
     else:
         session["next_url"] = request.path
         return redirect("/")

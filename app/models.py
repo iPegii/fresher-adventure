@@ -60,7 +60,7 @@ class Permission(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<permission {self.permission}>"
+        return f"<Permission> Permission: {self.permission}, Checkpoint_id:{self.checkpoint_id}"
 
 
 class Checkpoint(db.Model):
@@ -92,14 +92,17 @@ class Checkpoint(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Checkpoint %r> % {self.name}"
+        return f"<Checkpoint> name: {self.name}, description: {self.description}, visible: {self.can_be_visible}"
 
 
 class Point(db.Model):
     """Database model for Point"""
 
     id = db.Column(db.Integer, primary_key=True)
-    point = db.Column(db.Integer, nullable=False)
+    point_amount = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'),
+        nullable=False)
     checkpoint_id = db.Column(
         db.Integer, db.ForeignKey('checkpoint.id'),
         nullable=False)
@@ -146,7 +149,7 @@ class Team(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Team {self.name}>"
+        return f"<Team> name: {self.name}"
 
 
 class Location(db.Model):
@@ -177,4 +180,4 @@ class Location(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Location {self.name}>"
+        return f"<Location> name: {self.name}"

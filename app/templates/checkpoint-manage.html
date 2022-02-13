@@ -6,33 +6,40 @@
         {% if users %}
         <h2>Käyttäjät</h2>
         <div>
-            <ul style="list-style-type: none;padding: 0; margin: 0;">
-                {% for user in users%}
-                <li>
-                    <div>
-                        <span>{{user.user_name}}</span>
-                        <select name="checkpoints">
-                            {% if user.checkpoint_name == None %}
-                            <option id="default-value" disabled selected value>
-                                -- Valitse rasti
-                                -- </option>
-                            {% else %}
-                            <option id="default-value" disabled selected
-                                value={user.checkpoint_id}>
-                                {{user.checkpoint_name}} </option>
-                            {% endif %}
-                            {% for checkpoint in checkpoints%}
-                            {% if checkpoint.name != None %}
-                            <option id="choose-checkpoint"
-                                value={{checkpoint.name}}>
-                                {{checkpoint.name}}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
+            <form action="/checkpoint" method="POST">
+                <input type="hidden" name="csrf_token" value={{csrf_token()}}>
+                <ul style="list-style-type: none;padding: 0; margin: 0;">
+                    {% for user in users%}
+                    <li>
+                        <div>
+                            <span>{{user.user_name}}</span>
+                            <select name="checkpoint_select">
+                                {% if user.checkpoint_name == None %}
+                                <option id="default-value" disabled selected
+                                    value>
+                                    -- Valitse rasti
+                                    -- </option>
+                                {% else %}
+                                <option id="default-value" disabled selected
+                                    value={user.checkpoint_id}>
+                                    {{user.checkpoint_name}} </option>
+                                {% endif %}
+                                {% for checkpoint in checkpoints%}
+                                {% if checkpoint.name != None %}
+                                <option id="choose-checkpoint"
+                                    value='{{user.user_id}},{{checkpoint.id}}'>
+                                    {{checkpoint.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit" name="submit_button"
+                    value="save_checkpoint"
+                    class="btn btn-primary">Tallenna</button>
+            </form>
         </div>
         {% else %}
         <h2>Ei käyttäjiä</h2>
@@ -43,10 +50,10 @@
         <h2 style="text-align: center;">Rastit</h2>
         <div style="margin-left: 1rem;">
             <ul style="list-style-type: none;padding: 0; margin: 0;">
-                {% for user in users%}
-                {% if user.checkpoint_name != None %}
+                {% for checkpoint in checkpoints%}
+                {% if checkpoint.name != None %}
                 <li>
-                    <p>{{user.checkpoint_name}}</p>
+                    <p>{{checkpoint.name}}</p>
                 </li>
                 {% endif %}
                 {% endfor %}
@@ -57,12 +64,14 @@
         {% endif %}
         <div style="margin: auto;width: fit-content;">
             <form action="/checkpoint" method="POST">
+                <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <div class="form-group">
 
-                    {{ form.name.label }}
+                    {{ checkpoint_adding_form.name.label }}
                     <div
                         style="flex-direction: row; display: flex; align-items: center;">
-                        {{ form.name(size=20, class="form-control",
+                        {{ checkpoint_adding_form.name(size=20,
+                        class="form-control",
                         placeholder="Rastin nimi")}}
                         <button type="submit" class="btn"
                             name="new checkpoint">

@@ -40,9 +40,10 @@ CREATE TABLE location (
 );
 CREATE TABLE point (
     id SERIAL PRIMARY KEY,
+    point_amount INTEGER NOT NULL,
+    user_id INTEGER REFERENCES users NOT NULL
     checkpoint_id INTEGER REFERENCES checkpoint NOT NULL,
     team_id INTEGER REFERENCES team NOT NULL,
-    point_amount INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
 );

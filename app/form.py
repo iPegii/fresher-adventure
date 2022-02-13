@@ -1,4 +1,4 @@
-from wtforms import StringField, validators, EmailField, PasswordField
+from wtforms import StringField, validators, EmailField, PasswordField, SelectField
 from flask_wtf import FlaskForm
 from app.models import Team, Users as User
 
@@ -58,3 +58,9 @@ class TeamCreationForm(FlaskForm):
         if old_team is not None:
             raise validators.ValidationError(
                 'Joukkueen nimen pitää olla uniikki')
+
+
+class UserPermissionToCheckpointForm(FlaskForm):
+    """Select field for changing user permission to checkpoint"""
+
+    checkpoint = SelectField('Rastit', coerce=int)

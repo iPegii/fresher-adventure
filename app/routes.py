@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, session, Blueprint
 from werkzeug.security import check_password_hash, generate_password_hash
-from app import app
+from app import app, csrf_handler
 from app.models import db
 from app.form import LoginForm, RegisterForm, CheckpointCreationForm, TeamCreationForm
 from app.models import Users as User, Permission, Checkpoint, Team
@@ -51,33 +51,40 @@ def manage_checkpoint():
     if(user_permission == 1000):
         if(request.method == "GET"):
             users = User.query.outerjoin(Permission, User.id == Permission.user_id).outerjoin(Checkpoint, Checkpoint.id == Permission.checkpoint_id).add_columns(User.id, User.name.label("user_name"), Permission.user_id, Permission.permission,
-                                                                                                                                                                 Permission.checkpoint_id, Checkpoint.id, Checkpoint.name.label("checkpoint_name")).all()
+                                                                                                                                                                 Permission.checkpoint_id, Checkpoint.id, Checkpoint.name.label("checkpoint_name"), User.created_at).order_by(User.created_at).all()
             checkpoints = Checkpoint.query.all()
             for check in users:
                 print(check)
-            checkpoint_form = CheckpointCreationForm()
+            checkpoint_adding_form = CheckpointCreationForm()
             return render_template(
-                "checkpoint-manage.html", form=checkpoint_form, checkpoints=checkpoints, users=users)
+                "checkpoint-manage.html", checkpoint_adding_form=checkpoint_adding_form, checkpoints=checkpoints, users=users)
         if(request.method == "POST"):
-            form = CheckpointCreationForm(request.form)
-            checkpoint_name = form.name.data
-            findCheckpoint = Checkpoint.query.filter(
-                (Checkpoint.name == checkpoint_name)).first()
-            if findCheckpoint is None:
-                new_checkpoint = Checkpoint(
-                    checkpoint_name, "", False,
-                    None, modified_at=db.func.now(),
-                    created_at=db.func.now())
-                db.session.add(new_checkpoint)
+            if request.form["submit_button"] == "save_checkpoint":
+                checkpoint_data = request.form.get("checkpoint_select", "")
+                checkpoint_data_filtered = checkpoint_data.split(",")
+                temp_user_permission = Permission.query.get(
+                    checkpoint_data_filtered[0])
+                temp_user_permission.checkpoint_id = checkpoint_data_filtered[1]
                 db.session.commit()
+                return redirect("/checkpoint")
             else:
-                return
-        users = User.query.all()
-        checkpoints = Checkpoint.query.all()
-        emptyForm = CheckpointCreationForm()
-        return render_template(
-            "checkpoint-manage.html", form=emptyForm,
-            users=users, checkpoints=checkpoints)
+                form = CheckpointCreationForm(request.form)
+                checkpoint_name = form.name.data
+                findCheckpoint = Checkpoint.query.filter(
+                    (Checkpoint.name == checkpoint_name)).first()
+                if findCheckpoint is None:
+                    new_checkpoint = Checkpoint(
+                        checkpoint_name, "", False,
+                        None, modified_at=db.func.now(),
+                        created_at=db.func.now())
+                    db.session.add(new_checkpoint)
+                    db.session.commit()
+                users = User.query.all()
+                checkpoints = Checkpoint.query.all()
+                emptyForm = CheckpointCreationForm()
+                return render_template(
+                    "checkpoint-manage.html", form=emptyForm,
+                    users=users, checkpoints=checkpoints)
     else:
         session["next_url"] = request.path
         return redirect("/")
@@ -195,3 +202,8 @@ def login():
             return redirect("/")
     else:
         return redirect("/")
+
+
+@app.errorhandler(csrf_handler.CSRFError)
+def csrf_error(reason):
+    return render_template('error.html', reason=reason)

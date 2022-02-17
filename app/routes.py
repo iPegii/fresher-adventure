@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, csrf_handler
 from app.models import db
 from app.form import LoginForm, RegisterForm, CheckpointCreationForm, TeamCreationForm
-from app.models import Users as User, Permission, Checkpoint, Team
+from app.models import Users as User, Permission, Checkpoint, Team, Point
 import logging
 logging.basicConfig()
 logging.getLogger(
@@ -14,12 +14,12 @@ mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 @app.route("/")
 def index():
-
     if session.get("permission") == 2:
-        teams = Team.query.all()
-        return render_template("checkpoint-manage.html", teams=teams)
+        permissions_data = Permission.query.filter(
+            Permission.user_id == session.get("user_id")).first()
+        return checkpoint(permissions_data.checkpoint_id)
     elif session.get("permission") == 1000:
-        return redirect("/checkpoint")
+        return redirect("/checkpoint/manage")
     else:
         form = LoginForm()
         return render_template(
@@ -45,8 +45,8 @@ def permissions_manage():
         return redirect("/")
 
 
-@app.route("/checkpoint", methods=["POST", "GET"])
-def manage_checkpoint():
+@app.route("/checkpoint/manage", methods=["POST", "GET"])
+def checkpoint_manage():
     user_permission = session.get('permission')
     if(user_permission == 1000):
         if(request.method == "GET"):
@@ -65,8 +65,10 @@ def manage_checkpoint():
                 temp_user_permission = Permission.query.get(
                     checkpoint_data_filtered[0])
                 temp_user_permission.checkpoint_id = checkpoint_data_filtered[1]
+                if temp_user_permission.permission <= 1:
+                    temp_user_permission.permission = 2
                 db.session.commit()
-                return redirect("/checkpoint")
+                return redirect("/checkpoint/manage")
             else:
                 form = CheckpointCreationForm(request.form)
                 checkpoint_name = form.name.data
@@ -79,14 +81,30 @@ def manage_checkpoint():
                         created_at=db.func.now())
                     db.session.add(new_checkpoint)
                     db.session.commit()
-                return redirect("/")
+                return redirect("/checkpoint/manage")
     else:
         session["next_url"] = request.path
         return redirect("/")
 
 
-@ app.route("/team", methods=["POST", "GET"])
-def manage_team():
+@app.route("/checkpoint/<int:id>")
+def checkpoint(id):
+    checkpoint = Checkpoint.query.filter(Checkpoint.id == id).first()
+    teams = Team.query.outerjoin(Point, Team.id == Point.team_id).outerjoin(Checkpoint, Point.checkpoint_id ==
+                                                                            id).add_columns(Team.id, Team.name.label("team_name"), Point.point_amount, Checkpoint.id.label("checkpoint_id"), Point.team_id.label("team_id")).order_by(Team.created_at)
+    for i in teams:
+        print(i)
+    return render_template("checkpoint.html", teams=teams, checkpoint=checkpoint)
+
+
+@app.route("/checkpoints")
+def checkpoints():
+    checkpoints = Checkpoint.query.all()
+    return render_template("overview.html", checkpoints=checkpoints)
+
+
+@ app.route("/team-manage", methods=["POST", "GET"])
+def team_manage():
     user_permission = session.get('permission')
     if(user_permission == 1000):
         users = User.query.all()
@@ -124,6 +142,21 @@ def manage_team():
     else:
         session["next_url"] = request.path
         return redirect("/")
+
+
+@app.route("/team/<int:id>")
+def team(id):
+    print("id", id)
+    user_id = session.get("user_id")
+    permission = Permission.query.filter(Permission.user_id == user_id).first()
+    print(permission)
+    point_data = Point.query.filter(Point.team_id == id).filter(
+        Point.checkpoint_id == permission.checkpoint_id
+    ).first()
+    team = Team.query.filter(Team.id == id).first()
+    print("team: ", team)
+
+    return render_template("team.html", checkpoint=checkpoint, point_data=point_data, user_id=user_id, team=team)
 
 
 @ app.route("/logout")
@@ -177,6 +210,7 @@ def login():
             if user and check_password_hash(
                     user.password, form.password.data):
                 session['username'] = user.name
+                session['user_id'] = user.id
                 permission = Permission.query.filter(
                     Permission.user_id == user.id).first()
                 session['permission'] = permission.permission

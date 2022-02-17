@@ -6,7 +6,7 @@
         {% if users %}
         <h2>Käyttäjät</h2>
         <div style="max-width: 60%;">
-            <form action="/checkpoint" method="POST">
+            <form action="/checkpoint/manage" method="POST">
                 <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <ul style="list-style-type: none;padding: 0; margin: 0;">
                     {% for user in users%}
@@ -68,7 +68,7 @@
         <h2 style="text-align: center;">Ei rasteja</h2>
         {% endif %}
         <div style="margin: auto;width: fit-content;">
-            <form action="/checkpoint" method="POST">
+            <form action="/checkpoint/manage" method="POST">
                 <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <div class="form-group">
 

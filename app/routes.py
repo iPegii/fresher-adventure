@@ -2,7 +2,8 @@ from flask import render_template, request, redirect, session, Blueprint
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, csrf_handler
 from app.models import db
-from app.form import LoginForm, RegisterForm, CheckpointCreationForm, TeamCreationForm
+from app.form import LoginForm, RegisterForm
+from app.form import CheckpointCreationForm, TeamCreationForm
 from app.models import Users as User, Permission, Checkpoint, Team
 import logging
 logging.basicConfig()
@@ -14,11 +15,17 @@ mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 @app.route("/")
 def index():
-
-    if session.get("permission") == 2:
+    permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if permission is None:
+        form = LoginForm()
+        return render_template(
+            "index.html", form=form)
+    if permission.permission == 2:
         teams = Team.query.all()
-        return render_template("checkpoint-manage.html", teams=teams)
-    elif session.get("permission") == 1000:
+        return render_template(
+            "checkpoint-manage.html", teams=teams)
+    elif permission.permission == 1000:
         return redirect("/checkpoint")
     else:
         form = LoginForm()
@@ -29,15 +36,20 @@ def index():
 @app.route("/permissions", methods=["GET", "POST"])
 def permissions_manage():
 
-    if session.get("permission") is not None:
-        if session.get('permission') == 1000:
+    permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if permission is not None:
+        if permission.permission == 1000:
             if request.method == "GET":
-                users = User.query.join(Permission).add_columns(User.id, User.name, Permission.user_id, Permission.permission).filter(
-                    User.id == Permission.user_id)
+                users = User.query.join(Permission).add_columns(
+                    User.id, User.name, Permission.user_id,
+                    Permission.permission).filter(
+                        User.id == Permission.user_id)
 
                 for user in users:
                     print(user)
-                return render_template("permissions.html", users=users)
+                return render_template(
+                    "permissions.html", users=users)
         else:
             return redirect("/")
     else:
@@ -47,24 +59,42 @@ def permissions_manage():
 
 @app.route("/checkpoint", methods=["POST", "GET"])
 def manage_checkpoint():
-    user_permission = session.get('permission')
-    if(user_permission == 1000):
+    user_permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if(user_permission is None):
+        session["next_url"] = request.path
+        return redirect("/")
+    if(user_permission.permission == 1000):
         if(request.method == "GET"):
-            users = User.query.outerjoin(Permission, User.id == Permission.user_id).outerjoin(Checkpoint, Checkpoint.id == Permission.checkpoint_id).add_columns(User.id, User.name.label("user_name"), Permission.user_id, Permission.permission,
-                                                                                                                                                                 Permission.checkpoint_id, Checkpoint.id, Checkpoint.name.label("checkpoint_name"), User.created_at).order_by(User.created_at).all()
+            users = User.query.outerjoin(
+                Permission, User.id == Permission.user_id
+            ).outerjoin(
+                Checkpoint, Checkpoint.id == Permission.checkpoint_id
+            ).add_columns(
+                User.id, User.name.label("user_name"), Permission.user_id,
+                Permission.permission, Permission.checkpoint_id, Checkpoint.id,
+                Checkpoint.name.label("checkpoint_name"), User.created_at
+            ).order_by(User.created_at).all()
             checkpoints = Checkpoint.query.all()
             for check in users:
                 print(check)
             checkpoint_adding_form = CheckpointCreationForm()
             return render_template(
-                "checkpoint-manage.html", checkpoint_adding_form=checkpoint_adding_form, checkpoints=checkpoints, users=users)
+                "checkpoint-manage.html",
+                checkpoint_adding_form=checkpoint_adding_form,
+                checkpoints=checkpoints, users=users)
         if(request.method == "POST"):
             if request.form["submit_button"] == "save_checkpoint":
-                checkpoint_data = request.form.get("checkpoint_select", "")
-                checkpoint_data_filtered = checkpoint_data.split(",")
-                temp_user_permission = Permission.query.get(
-                    checkpoint_data_filtered[0])
-                temp_user_permission.checkpoint_id = checkpoint_data_filtered[1]
+                checkpoint_data = request.form.get(
+                    "checkpoint_select", "")
+                checkpoint_data_filtered = checkpoint_data.split(
+                    ",")
+                print(checkpoint_data_filtered)
+                temp_user = Permission.query.filter(
+                    Permission.user_id ==
+                    int(checkpoint_data_filtered[0])).first()
+                print(temp_user)
+                temp_user.checkpoint_id = checkpoint_data_filtered[1]
                 db.session.commit()
                 return redirect("/checkpoint")
             else:
@@ -83,8 +113,9 @@ def manage_checkpoint():
                 checkpoints = Checkpoint.query.all()
                 emptyForm = CheckpointCreationForm()
                 return render_template(
-                    "checkpoint-manage.html", form=emptyForm,
-                    users=users, checkpoints=checkpoints)
+                    "checkpoint-manage.html",
+                    form=emptyForm, users=users,
+                    checkpoints=checkpoints)
     else:
         session["next_url"] = request.path
         return redirect("/")
@@ -92,7 +123,11 @@ def manage_checkpoint():
 
 @ app.route("/team", methods=["POST", "GET"])
 def manage_team():
-    user_permission = session.get('permission')
+    user_permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if(user_permission is None):
+        session["next_url"] = request.path
+        return redirect("/")
     if(user_permission == 1000):
         users = User.query.all()
         teams = Team.query.all()
@@ -182,9 +217,7 @@ def login():
             if user and check_password_hash(
                     user.password, form.password.data):
                 session['username'] = user.name
-                permission = Permission.query.filter(
-                    Permission.user_id == user.id).first()
-                session['permission'] = permission.permission
+                session['user_id'] = user.id
                 session.permanent = True
                 next_url = session.get("next_url")
                 if next_url is not None:

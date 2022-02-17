@@ -8,9 +8,13 @@ class Users(db.Model):
     """Database model for User"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), nullable=False, unique=True)
+    name = db.Column(
+        db.String(25),
+        nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String(255), nullable=False, unique=True)
+    email = db.Column(
+        db.String(255),
+        nullable=False, unique=True)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -60,14 +64,17 @@ class Permission(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Permission> Permission: {self.permission}, Checkpoint_id:{self.checkpoint_id}"
+        return f"""< Permission > Permission: {self.permission}
+        Checkpoint_id: {self.checkpoint_id}"""
 
 
 class Checkpoint(db.Model):
     """Database model for Checkpoint"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=True, unique=True)
+    name = db.Column(
+        db.String(50),
+        nullable=True, unique=True)
     description = db.Column(db.String(1000), nullable=True)
     can_be_visible = db.Column(
         db.Boolean, nullable=False, default=False)
@@ -92,7 +99,8 @@ class Checkpoint(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Checkpoint> name: {self.name}, description: {self.description}, visible: {self.can_be_visible}"
+        return f"""<Checkpoint> name: {self.name},
+        description: {self.description}, visible: {self.can_be_visible}"""
 
 
 class Point(db.Model):
@@ -133,7 +141,9 @@ class Team(db.Model):
     """Database model for Team"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False, unique=True)
+    name = db.Column(
+        db.String(50),
+        nullable=False, unique=True)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())

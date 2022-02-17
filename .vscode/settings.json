@@ -1,0 +1,24 @@
+{
+  "python.linting.pylintEnabled": false,
+  "python.linting.enabled": true,
+  "python.linting.lintOnSave": true,
+  "python.formatting.provider": "autopep8",
+  "editor.formatOnSave": true,
+  "files.autoSave": "afterDelay",
+  "python.formatting.autopep8Args": [
+    "--max-line-length",
+    "60",
+    "--experimental",
+    "--ignore",
+    "E402"
+  ],
+  "python.formatting.yapfArgs": [
+    "--style",
+    "{based_on_style: chromium, indent_width: 20}"
+  ],
+  "python.formatting.blackArgs": [
+    "--line-length",
+    "60"
+  ],
+  "python.linting.flake8Enabled": true
+}

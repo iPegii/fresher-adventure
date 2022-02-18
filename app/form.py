@@ -1,4 +1,5 @@
-from wtforms import StringField, validators, EmailField, PasswordField, SelectField
+from wtforms import StringField, validators
+from wtforms import EmailField, PasswordField, SelectField
 from flask_wtf import FlaskForm
 from app.models import Team, Users as User
 
@@ -49,7 +50,8 @@ class TeamCreationForm(FlaskForm):
     """Creation of new team"""
     name = StringField(
         'Joukkueen nimi',
-        [validators.Length(min=4, max=50), validators.DataRequired()])
+        [validators.Length(min=4, max=50),
+         validators.DataRequired()])
 
     def validate_team_name(form, field):
         print(form, field, "teamName")

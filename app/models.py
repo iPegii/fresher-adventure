@@ -64,7 +64,7 @@ class Permission(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"""< Permission > Permission: {self.permission}
+        return f"""<Permission> Permission: {self.permission}
         Checkpoint_id: {self.checkpoint_id}"""
 
 

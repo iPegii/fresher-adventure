@@ -4,7 +4,7 @@ from app import app, csrf_handler
 from app.models import db
 from app.form import LoginForm, RegisterForm
 from app.form import CheckpointCreationForm, TeamCreationForm
-from app.models import Users as User, Permission, Checkpoint, Team
+from app.models import Users as User, Permission, Checkpoint, Team, Point
 import logging
 logging.basicConfig()
 logging.getLogger(
@@ -22,11 +22,10 @@ def index():
         return render_template(
             "index.html", form=form)
     if permission.permission == 2:
-        teams = Team.query.all()
-        return render_template(
-            "checkpoint-manage.html", teams=teams)
+        print('wow')
+        return checkpoint(permission.checkpoint_id)
     elif permission.permission == 1000:
-        return redirect("/checkpoint")
+        return redirect("/checkpoint/manage")
     else:
         form = LoginForm()
         return render_template(
@@ -45,9 +44,6 @@ def permissions_manage():
                     User.id, User.name, Permission.user_id,
                     Permission.permission).filter(
                         User.id == Permission.user_id)
-
-                for user in users:
-                    print(user)
                 return render_template(
                     "permissions.html", users=users)
         else:
@@ -57,7 +53,7 @@ def permissions_manage():
         return redirect("/")
 
 
-@app.route("/checkpoint", methods=["POST", "GET"])
+@app.route("/checkpoint/manage", methods=["POST", "GET"])
 def manage_checkpoint():
     user_permission = Permission.query.filter(
         Permission.user_id == session.get("user_id")).first()
@@ -76,27 +72,30 @@ def manage_checkpoint():
                 Checkpoint.name.label("checkpoint_name"), User.created_at
             ).order_by(User.created_at).all()
             checkpoints = Checkpoint.query.all()
-            for check in users:
-                print(check)
             checkpoint_adding_form = CheckpointCreationForm()
             return render_template(
                 "checkpoint-manage.html",
                 checkpoint_adding_form=checkpoint_adding_form,
                 checkpoints=checkpoints, users=users)
         if(request.method == "POST"):
-            if request.form["submit_button"] == "save_checkpoint":
+            if request.form.get("submit_button") == "save_checkpoint":
                 checkpoint_data = request.form.get(
                     "checkpoint_select", "")
                 checkpoint_data_filtered = checkpoint_data.split(
                     ",")
-                print(checkpoint_data_filtered)
-                temp_user = Permission.query.filter(
-                    Permission.user_id ==
-                    int(checkpoint_data_filtered[0])).first()
-                print(temp_user)
-                temp_user.checkpoint_id = checkpoint_data_filtered[1]
+                user_id = int(checkpoint_data_filtered[0])
+                u_permission = Permission.query.filter(
+                    Permission.user_id == user_id).first()
+                checkpoint_id = None
+                print(checkpoint_data)
+                if checkpoint_data_filtered[1] != "None":
+                    checkpoint_id = int(
+                        checkpoint_data_filtered[1])
+                if u_permission.permission <= 1:
+                    u_permission.permission = 2
+                u_permission.checkpoint_id = checkpoint_id
                 db.session.commit()
-                return redirect("/checkpoint")
+                return redirect("/checkpoint/manage")
             else:
                 form = CheckpointCreationForm(request.form)
                 checkpoint_name = form.name.data
@@ -109,26 +108,44 @@ def manage_checkpoint():
                         created_at=db.func.now())
                     db.session.add(new_checkpoint)
                     db.session.commit()
-                users = User.query.all()
-                checkpoints = Checkpoint.query.all()
-                emptyForm = CheckpointCreationForm()
-                return render_template(
-                    "checkpoint-manage.html",
-                    form=emptyForm, users=users,
-                    checkpoints=checkpoints)
+                return redirect("/checkpoint/manage")
     else:
         session["next_url"] = request.path
         return redirect("/")
 
 
-@ app.route("/team", methods=["POST", "GET"])
-def manage_team():
+@app.route("/checkpoint/<int:id>")
+def checkpoint(id):
+    checkpoint = Checkpoint.query.filter(
+        Checkpoint.id == id).first()
+    teams = Team.query.outerjoin(
+        Point, Team.id == Point.team_id).outerjoin(
+        Checkpoint, Point.checkpoint_id == id).add_columns(
+        Team.id, Team.name.label("team_name"),
+        Point.point_amount, Checkpoint.id.label(
+            "checkpoint_id"),
+        Point.team_id.label("team_id")).order_by(
+        Team.created_at)
+    return render_template(
+        "checkpoint.html", teams=teams,
+        checkpoint=checkpoint)
+
+
+@app.route("/checkpoints")
+def checkpoints():
+    checkpoints = Checkpoint.query.all()
+    return render_template(
+        "overview.html", checkpoints=checkpoints)
+
+
+@ app.route("/team-manage", methods=["POST", "GET"])
+def team_manage():
     user_permission = Permission.query.filter(
         Permission.user_id == session.get("user_id")).first()
     if(user_permission is None):
         session["next_url"] = request.path
         return redirect("/")
-    if(user_permission == 1000):
+    if(user_permission.permission == 1000):
         users = User.query.all()
         teams = Team.query.all()
         empty_form = TeamCreationForm()
@@ -164,6 +181,24 @@ def manage_team():
     else:
         session["next_url"] = request.path
         return redirect("/")
+
+
+@app.route("/team/<int:id>")
+def team(id):
+    permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if(permission is None):
+        session["next_url"] = request.path
+        return redirect("/")
+    point_data = Point.query.filter(Point.team_id == id).filter(
+        Point.checkpoint_id == permission.checkpoint_id
+    ).first()
+    team = Team.query.filter(Team.id == id).first()
+    return render_template(
+        "team.html", checkpoint=checkpoint,
+        point_data=point_data, user_id=session.get(
+            "user_id"),
+        team=team)
 
 
 @ app.route("/logout")
@@ -240,3 +275,16 @@ def login():
 @app.errorhandler(csrf_handler.CSRFError)
 def csrf_error(reason):
     return render_template('error.html', reason=reason)
+
+
+'''
+
+                sql = """UPDATE permission SET checkpoint_id =: checkpoint_id
+                , permission = : permission WHERE user_id = : user_id"""
+                db.session.execute(
+                    sql,
+                    {"checkpoint_id": checkpoint_id,
+                     "permission": temp_user_permission.permission,
+                     "user_id": user_id})
+
+'''

@@ -16,7 +16,7 @@ CREATE TABLE permission (
 );
 CREATE TABLE checkpoint (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50),
+    name VARCHAR(50) NOT NULL,
     description VARCHAR(1000),
     can_be_visible boolean DEFAULT False NOT NULL,
     location_id INTEGER,

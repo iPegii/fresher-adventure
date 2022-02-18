@@ -1,43 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<div
-    style="display: flex; flex-direction: row; justify-content: space-between;">
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
     <div name="user panel">
         {% if users %}
         <h2>Käyttäjät</h2>
         <div>
-            <form action="/checkpoint" method="POST">
+            <form action="/checkpoint/manage" method="POST">
                 <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <ul style="list-style-type: none;padding: 0; margin: 0;">
                     {% for user in users%}
                     <li>
-                        <div>
-                            <span>{{user.user_name}}</span>
-                            <select name="checkpoint_select">
+                        <div class="form-group mb-2">
+                            <span style="overflow-wrap: break-word;max-width: 100%;">{{user.user_name}}</span>
+                            <select class="form-control" name="checkpoint_select">
                                 {% if user.checkpoint_name == None %}
-                                <option id="default-value" disabled selected
-                                    value>
-                                    -- Valitse rasti
-                                    -- </option>
-                                {% else %}
-                                <option id="default-value" disabled selected
-                                    value={user.checkpoint_id}>
-                                    {{user.checkpoint_name}} </option>
+                                <option id="default-value" selected disabled value=''>
+                                    Ei rastia
+                                </option>
                                 {% endif %}
                                 {% for checkpoint in checkpoints%}
                                 {% if checkpoint.name != None %}
-                                <option id="choose-checkpoint"
-                                    value='{{user.user_id}},{{checkpoint.id}}'>
+                                {% if user.checkpoint_name != None and checkpoint.name == user.checkpoint_name %}
+                                <option id="user-saved-value" selected value='{{user.user_id}},{{checkpoint.id}}'>
+                                    {{user.checkpoint_name}} </option>
+                                {% else %}
+                                <option id="choose-checkpoint" value='{{user.user_id}},{{checkpoint.id}}'>
                                     {{checkpoint.name}}</option>
                                 {% endif %}
+                                {% endif %}
                                 {% endfor %}
+                                <option id="empty-value" value='{{user.user_id}},None'>
+                                    Ei rastia
+                                </option>
                             </select>
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
-                <button type="submit" name="submit_button"
-                    value="save_checkpoint"
+                <button type="submit" name="submit_button" value="save_checkpoint"
                     class="btn btn-primary">Tallenna</button>
             </form>
         </div>
@@ -48,12 +48,13 @@
     <div name="checkpoint panel" style="width: 20em;">
         {% if checkpoints %}
         <h2 style="text-align: center;">Rastit</h2>
-        <div style="margin-left: 1rem;">
-            <ul style="list-style-type: none;padding: 0; margin: 0;">
+        <div>
+            <ul style="list-style-type:disc">
                 {% for checkpoint in checkpoints%}
                 {% if checkpoint.name != None %}
                 <li>
-                    <p>{{checkpoint.name}}</p>
+                    <p style="overflow-wrap: break-word;">{{checkpoint.name}}
+                    </p>
                 </li>
                 {% endif %}
                 {% endfor %}
@@ -62,21 +63,19 @@
         {% else %}
         <h2 style="text-align: center;">Ei rasteja</h2>
         {% endif %}
-        <div style="margin: auto;width: fit-content;">
-            <form action="/checkpoint" method="POST">
+        <div style="margin: auto;max-width: 80%;">
+            <form action="/checkpoint/manage" method="POST">
                 <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <div class="form-group">
-
                     {{ checkpoint_adding_form.name.label }}
-                    <div
-                        style="flex-direction: row; display: flex; align-items: center;">
-                        {{ checkpoint_adding_form.name(size=20,
-                        class="form-control",
-                        placeholder="Rastin nimi")}}
-                        <button type="submit" class="btn"
-                            name="new checkpoint">
-                            <i style="color: #2ccc1b;"
-                                class="fas fa-plus-circle fa-2x"></i>
+                    <div style="flex-direction: row;display:flex;flex-wrap: wrap; align-items: center;">
+                        <div style="flex-basis: 60%;">
+                            {{ checkpoint_adding_form.name(size=20,
+                            class="form-control",
+                            placeholder="Rastin nimi")}}
+                        </div>
+                        <button style="flex-basis: 20%;" type="submit" class="btn" name="new checkpoint">
+                            <i style="color: #2ccc1b;" class="fas fa-plus-circle fa-2x"></i>
                         </button>
                     </div>
                 </div>

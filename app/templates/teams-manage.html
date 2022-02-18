@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex;">
+    <div name="team panel" style="width: 20em;">
+        {% if teams %}
+        <h2>Joukkueet</h2>
+        <div>
+            <ul style="list-style-type:disc">
+                {% for team in teams%}
+                {% if team.name != None %}
+                <li>
+                    <p style="overflow-wrap: break-word;">{{team.name}}
+                    </p>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <h2>Ei joukkueita</h2>
+        {% endif %}
+        <div style="margin: auto;max-width: 80%;">
+            <form action="/teams/manage" method="POST">
+                <input type="hidden" name="csrf_token" value={{csrf_token()}}>
+                <div class="form-group">
+                    {{ form.name.label }}
+                    <div style="flex-direction: row;display:flex;flex-wrap: wrap; align-items: center;">
+                        <div style="flex-basis: 60%;">
+                            {{ form.name(size=20,
+                            class="form-control",
+                            placeholder="Joukkueen nimi")}}
+                        </div>
+                        <button style="flex-basis: 20%;" type="submit" class="btn" name="new team">
+                            <i style="color: #2ccc1b;" class="fas fa-plus-circle fa-2x"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

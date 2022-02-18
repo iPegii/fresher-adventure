@@ -107,10 +107,10 @@ class Point(db.Model):
     """Database model for Point"""
 
     id = db.Column(db.Integer, primary_key=True)
-    point_amount = db.Column(db.Integer, nullable=False)
     user_id = db.Column(
         db.Integer, db.ForeignKey('users.id'),
         nullable=False)
+    point_amount = db.Column(db.Integer, nullable=False)
     checkpoint_id = db.Column(
         db.Integer, db.ForeignKey('checkpoint.id'),
         nullable=False)
@@ -125,9 +125,10 @@ class Point(db.Model):
         nullable=False, server_default=db.func.now())
 
     def __init__(
-            self, point, checkpoint_id, team_id,
-            modified_at, created_at):
-        self.point = point
+            self, user_id, point_amount, checkpoint_id,
+            team_id, modified_at, created_at):
+        self.user_id = user_id
+        self.point_amount = point_amount
         self.checkpoint_id = checkpoint_id
         self.team_id = team_id
         self.modified_at = modified_at

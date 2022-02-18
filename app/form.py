@@ -1,4 +1,4 @@
-from wtforms import StringField, validators
+from wtforms import StringField, validators, RadioField
 from wtforms import EmailField, PasswordField, SelectField
 from flask_wtf import FlaskForm
 from app.models import Team, Users as User
@@ -54,7 +54,6 @@ class TeamCreationForm(FlaskForm):
          validators.DataRequired()])
 
     def validate_team_name(form, field):
-        print(form, field, "teamName")
         old_team = Team.query.filter(
             (Team.name == field.data.name)).first()
         if old_team is not None:
@@ -66,3 +65,11 @@ class UserPermissionToCheckpointForm(FlaskForm):
     """Select field for changing user permission to checkpoint"""
 
     checkpoint = SelectField('Rastit', coerce=int)
+
+
+class PointsForm(FlaskForm):
+    """Radio field for giving team points"""
+
+    radio = RadioField(
+        'Pisteet',
+        choices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])

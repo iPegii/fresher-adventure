@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
+<h1>Rastien hallinta</h1>
 <div style="display: flex; flex-direction: row; justify-content: space-between;">
     <div name="user panel">
         {% if users %}
         <h2>Käyttäjät</h2>
         <div>
-            <form action="/checkpoint/manage" method="POST">
+            <form action="/checkpoints/manage" method="POST">
                 <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <ul style="list-style-type: none;padding: 0; margin: 0;">
                     {% for user in users%}
@@ -47,7 +48,7 @@
     </div>
     <div name="checkpoint panel" style="width: 20em;">
         {% if checkpoints %}
-        <h2 style="text-align: center;">Rastit</h2>
+        <h2 style="margin-left: 0.5em">Rastit</h2>
         <div>
             <ul style="list-style-type:disc">
                 {% for checkpoint in checkpoints%}
@@ -64,7 +65,7 @@
         <h2 style="text-align: center;">Ei rasteja</h2>
         {% endif %}
         <div style="margin: auto;max-width: 80%;">
-            <form action="/checkpoint/manage" method="POST">
+            <form action="/checkpoints/manage" method="POST">
                 <input type="hidden" name="csrf_token" value={{csrf_token()}}>
                 <div class="form-group">
                     {{ checkpoint_adding_form.name.label }}

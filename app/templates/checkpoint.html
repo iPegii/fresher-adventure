@@ -7,22 +7,16 @@
         {% for team in teams %}
         <div style="margin-bottom: 1em;">
             <a style="width: 100%;height: 100%;display: flex; justify-content:space-between; align-items: baseline;"
-                class="list-group-item list-group-item-action"
-                href="/team/{{team.id}}">
-                <span
-                    style="font-size: larger;"><strong>{{team.team_name}}</strong></span>
+                class="list-group-item list-group-item-action" href="/team/{{team.id}}">
+                <span style="font-size: larger;"><strong>{{team.team_name}}</strong></span>
                 <span style="display: flex; align-items:center">
                     {% if team.point_amount == None %}
-                    <i style="color: #c9cc00;margin-right: 0.5em;"
-                        class="fad fa-check-circle fa-2x"></i>
+                    <i style="color: #c9cc00;margin-right: 0.5em;" class="fas fa-check-circle fa-2x"></i>
                     {% else %}
-                    <i style="color: #00912e;margin-right: 0.5em;"
-                        class="fad fa-check-circle fa-2x"></i>
+                    <i style="color: #00912e;margin-right: 0.5em;" class="fas fa-check-circle fa-2x"></i>
                     {% endif %}
-                    <span style="font-size: 22px;"
-                        class="badge badge-primary badge-pill"
-                        data-toggle="tooltip" data-placement="bottom"
-                        title="Pisteitä annettu">5</span>
+                    <span style="font-size: 22px;" class="badge badge-primary badge-pill" data-toggle="tooltip"
+                        data-placement="bottom" title="Pisteitä annettu">5</span>
                 </span>
             </a>
         </div>

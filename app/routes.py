@@ -24,7 +24,7 @@ def index():
     if permission.permission == 2:
         return checkpoint(permission)
     elif permission.permission == 1000:
-        return redirect("/checkpoint/manage")
+        return redirect("/checkpoints/manage")
     else:
         form = LoginForm()
         return render_template(
@@ -100,7 +100,7 @@ def manage_checkpoint():
                     u_permission.permission = 2
                 u_permission.checkpoint_id = checkpoint_id
                 db.session.commit()
-                return redirect("/checkpoint/manage")
+                return redirect("/checkpoints/manage")
             else:
                 form = CheckpointCreationForm(request.form)
                 checkpoint_name = form.name.data
@@ -113,7 +113,7 @@ def manage_checkpoint():
                         created_at=db.func.now())
                     db.session.add(new_checkpoint)
                     db.session.commit()
-                return redirect("/checkpoint/manage")
+                return redirect("/checkpoints/manage")
     else:
         session["next_url"] = request.path
         return redirect("/")

@@ -126,7 +126,7 @@ def checkpoint(permission):
         Checkpoint.id == id).first()
     teams = Team.query.outerjoin(
         Point, Team.id == Point.team_id).outerjoin(
-        Checkpoint, Point.checkpoint_id == id).add_columns(
+        Checkpoint, id == Checkpoint.id).add_columns(
         Team.id, Team.name.label("team_name"),
         Point.point_amount, Checkpoint.id.label(
             "checkpoint_id"),

@@ -12,11 +12,13 @@
                 <span style="display: flex; align-items:center">
                     {% if team.point_amount == None %}
                     <i style="color: #c9cc00;margin-right: 0.5em;" class="fas fa-check-circle fa-2x"></i>
+                    <span style="font-size: 22px;" class="badge badge-primary badge-pill" data-toggle="tooltip"
+                        data-placement="bottom" title="Pisteitä annettu">0</span>
                     {% else %}
                     <i style="color: #00912e;margin-right: 0.5em;" class="fas fa-check-circle fa-2x"></i>
-                    {% endif %}
                     <span style="font-size: 22px;" class="badge badge-primary badge-pill" data-toggle="tooltip"
-                        data-placement="bottom" title="Pisteitä annettu">5</span>
+                        data-placement="bottom" title="Pisteitä annettu">{{team.point_amount}}</span>
+                    {% endif %}
                 </span>
             </a>
         </div>

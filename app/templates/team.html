@@ -3,7 +3,7 @@
 <div name="Manage team" style="align-items: center;">
     <h2 style="margin-bottom: 2em;">Joukkue: {{team.name}}</h2>
     {% if point_data.point_amount != None %}
-    <p style="font-size: 36px;text-align: center;" name="team_points">Tällä hetkellä annettu {{point_data.point_amount}}
+    <p style="font-size: 36px;text-align: center;" name="team_points">Annettu: {{point_data.point_amount}}
         pistettä</p>
     {% else %}
     <p style="font-size: 36px;text-align: center;" name="team_points">Joukkueelle ei annettu pisteitä</p>
@@ -15,15 +15,16 @@
                 <div style="display: flex; justify-content: center; flex-direction: row; font-size: 22px;">
                     {% for subfield in form.radio %}
                     <div style="display: flex; flex-direction: column;">
-                        <div style="transform: scale(2);margin-right: 1em;">{{ subfield}}</div>
-                        <div style="display: flex; flex-direction: column;">{{ subfield.label }}
+                        <div style="margin-right: 2em;">{{ subfield}}</div>
+                        <div style="font-size: 36px; display: flex; flex-direction: column;">{{ subfield.label }}
                         </div>
                     </div>
                     {% endfor %}
                 </div>
                 <div style="display: flex; justify-content: center;">
-                    <button id="give-points" type="submit" class="btn" name="give points">
-                        <i style="color: #2ccc1b;" class="fas fa-plus-circle fa-2x"></i>
+                    <button id="give-points" style="font-size: 20px;" type="submit" class="btn btn-primary"
+                        name="give points">
+                        Tallenna pisteet
                     </button>
                 </div>
             </div>

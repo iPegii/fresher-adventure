@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="overview-of-checkpoints">
+    <h1>Rastit</h1>
+    <table class="table table-bordered border-primary">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                {% for checkpoint in checkpoint_data %}
+                <th scope="col">{{checkpoint.name}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for checkpoint in data %}
+            <tr>
+                <th scope="row">{{checkpoint[0].team_name}}</th>
+                {% for team in checkpoint %}
+                {% if team.points != None %}
+                <td>{{team.points}}</td>
+                {% else %}
+                <td>Ei käyty</td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="list-group">
+        {% for checkpoint in checkpoints %}
+        <div style="margin-bottom: 1em;">
+            <a style="width: 100%;height: 100%;display: inline-block;" class="list-group-item list-group-item-action"
+                href="/checkpoint/{{checkpoint.id}}">{{checkpoint.name}}
+                <span style="float:right">
+                    <i style="color: yellow;" class="fa-solid fa-square-check fa-2x"></i>
+                    <span style="font-size: 22px;" class="badge badge-success badge-pill" data-toggle="tooltip"
+                        data-placement="bottom" title="Joukkueita käynyt">1</span>
+                </span>
+
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

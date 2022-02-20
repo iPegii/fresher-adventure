@@ -135,7 +135,7 @@ class Point(db.Model):
         self.created_at = created_at
 
     def __repr__(self):
-        return f"<Point {self.point}>"
+        return f"<Point {self.point_amount}>"
 
 
 class Team(db.Model):

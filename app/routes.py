@@ -73,7 +73,8 @@ def manage_checkpoint():
                 Permission.permission,
                 Permission.checkpoint_id,
                 Checkpoint.id,
-                Checkpoint.name.label("checkpoint_name"), User.created_at
+                Checkpoint.name.label(
+                    "checkpoint_name"), User.created_at
             ).order_by(User.created_at).all()
             checkpoints = Checkpoint.query.all()
             checkpoint_adding_form = CheckpointCreationForm()
@@ -121,28 +122,62 @@ def manage_checkpoint():
 
 @app.route("/checkpoint/<int:id>")
 def checkpoint(permission):
+    user_permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if(user_permission is None):
+        session["next_url"] = request.path
+        return redirect("/")
     id = permission.checkpoint_id
     checkpoint = Checkpoint.query.filter(
         Checkpoint.id == id).first()
-    teams = Team.query.outerjoin(
-        Point, Team.id == Point.team_id).outerjoin(
-        Checkpoint, id == Checkpoint.id).add_columns(
-        Team.id, Team.name.label("team_name"),
-        Point.point_amount, Checkpoint.id.label(
-            "checkpoint_id"),
-        Point.team_id.label("team_id")).order_by(
-        Team.created_at)
+    sql = "SELECT c.id, t.id,t.name, p.point_amount FROM checkpoint c"\
+        " LEFT OUTER JOIN point p ON p.checkpoint_id = :checkpoint_id"\
+        " RIGHT OUTER JOIN team t ON t.id = p.team_id and"\
+        " c.id = :checkpoint_id GROUP BY"\
+        " c.id, t.id, p.point_amount, p.checkpoint_id, p.team_id"\
+        " ORDER BY t.modified_at"
+    data = db.session.execute(
+        sql, {"checkpoint_id": id}).fetchall()
+    print(data)
+    for r in data:
+        print(r)
     return render_template(
-        "checkpoint.html", teams=teams,
-        checkpoint=checkpoint,
-        permission=permission.permission)
+        "checkpoint.html", checkpoint=checkpoint,
+        permission=user_permission.permission, data=data)
 
 
 @app.route("/checkpoints")
 def checkpoints():
-    checkpoints = Checkpoint.query.all()
-    return render_template(
-        "overview.html", checkpoints=checkpoints)
+    user_permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if(user_permission is None):
+        session["next_url"] = request.path
+        return redirect("/")
+    if(user_permission.permission == 1000):
+        checkpoints = Checkpoint.query.all()
+        teams = Team.query.all()
+
+        data = []
+        for team in teams:
+            sql = "SELECT c.id AS checkpoint_id,c.name AS checkpoint_name,"\
+                " t.id AS team_id,t.name AS team_name, "\
+                " p.point_amount AS points,"\
+                " CASE WHEN t.name is Null THEN :team_name ELSE 'wow'"\
+                " END AS team_name FROM team t"\
+                " LEFT OUTER JOIN point p ON p.team_id = :team_id"\
+                " RIGHT OUTER JOIN checkpoint c ON c.id = p.checkpoint_id and"\
+                "  t.id = :team_id GROUP BY"\
+                " c.id, t.id, p.point_amount, p.checkpoint_id, p.team_id"\
+                " ORDER BY checkpoint_id"
+            result = db.session.execute(
+                sql, {"team_id": team.id, "team_name": team.name}).fetchall()
+            data.insert(team.id, result)
+        return render_template(
+            "checkpoints.html", data=data,
+            checkpoint_data=checkpoints, teams=teams,
+            permission=user_permission.permission)
+    else:
+        redirect("/")
 
 
 @ app.route("/teams/manage", methods=["POST", "GET"])

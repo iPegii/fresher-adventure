@@ -22,14 +22,14 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <ul class="navbar-nav mr-auto"
           style="list-style-type: none;padding: 0; margin: 0;justify-content: left; text-align: left;">
-          {% if permission and permission >= 2 %}
+          {% if permission and permission == 2 %}
           <li class="nav-item">
             <a class="nav-link" style="color: #383838; font-size: medium;" href="/checkpoint">Rastille</a>
           </li>
           {% endif %}
           {% if permission and permission == 1000 %}
           <li class="nav-item">
-            <a class="nav-link" style="color: #383838; font-size: medium;" href="/team">Joukkueet</a>
+            <a class="nav-link" style="color: #383838; font-size: medium;" href="/checkpoints">Rastit</a>
           </li>
           {% endif %}
           {% if permission and permission == 1000 %}

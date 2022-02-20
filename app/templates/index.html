@@ -3,6 +3,9 @@
 {% if session.username %}
 
 {% else %}
+<strong>Arvioijalle (admin-käyttäjä):</br> Käyttäjä: {{admin}}</br> salasana: {{admin}}</strong></br></br>
+<strong> (rastinpitäjä-käyttäjä):</br> Käyttäjä: {{checkpointer}}</br> salasana: {{checkpointer}}</strong></br></br>
+
 <div style="margin-left: 1rem;">
     <form action="/login" method="POST" style="max-width: 13em">
         <div class="form-group">

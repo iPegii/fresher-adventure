@@ -6,6 +6,7 @@ from app.form import LoginForm, RegisterForm, PointsForm
 from app.form import CheckpointCreationForm, TeamCreationForm
 from app.models import Users as User, Permission, Checkpoint, Team, Point
 import logging
+from os import getenv
 logging.basicConfig()
 logging.getLogger(
     'sqlalchemy.engine').setLevel(logging.INFO)
@@ -18,9 +19,12 @@ def index():
     permission = Permission.query.filter(
         Permission.user_id == session.get("user_id")).first()
     if permission is None:
+        admin = getenv("ADMIN")
+        checkpointer = getenv("CHECKPOINT")
         form = LoginForm()
         return render_template(
-            "index.html", form=form)
+            "index.html", form=form, admin=admin,
+            checkpointer=checkpointer)
     if permission.permission == 2:
         return checkpoint(permission)
     elif permission.permission == 1000:

@@ -180,19 +180,20 @@ def checkpoints():
 
         data = []
         for team in teams:
+            print(team.name)
             sql = "SELECT c.id AS checkpoint_id,c.name AS checkpoint_name,"\
                 " t.id AS team_id,t.name AS team_name, "\
                 " p.point_amount AS points,"\
-                " CASE WHEN t.name is Null THEN :team_name ELSE 'wow'"\
+                " CASE WHEN t.name is Null THEN :team_name ELSE :team_name"\
                 " END AS team_name FROM team t"\
-                " LEFT OUTER JOIN point p ON p.team_id = :team_id"\
+                " LEFT OUTER JOIN point p ON p.team_id =:team_id"\
                 " RIGHT OUTER JOIN checkpoint c ON c.id = p.checkpoint_id and"\
                 "  t.id = :team_id GROUP BY"\
                 " c.id, t.id, p.point_amount, p.checkpoint_id, p.team_id"\
                 " ORDER BY checkpoint_id"
             result = db.session.execute(
                 sql, {"team_id": team.id, "team_name": team.name}).fetchall()
-            sql = "SELECT SUM(p.point_amount) as points_sum FROM point p "\
+            sql = "SELECT SUM(p.point_amount) AS points_sum FROM point p "\
                 "WHERE p.team_id=:team_id"
             result2 = db.session.execute(
                 sql, {"team_id": team.id}).fetchall()

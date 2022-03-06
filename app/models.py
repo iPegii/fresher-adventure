@@ -81,7 +81,8 @@ class Checkpoint(db.Model):
     location_id = db.Column(
         db.Integer, nullable=False)
     order = db.Column(
-        db.Integer, nullable=False, default=False)
+        db.Integer, nullable=False,
+        default=False)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -102,7 +103,8 @@ class Checkpoint(db.Model):
 
     def __repr__(self):
         return f"""<Checkpoint> name: {self.name},
-        description: {self.description}, visible: {self.can_be_visible}"""
+        description: {self.description},
+        visible: {self.can_be_visible}, order: {self.order}"""
 
 
 class Point(db.Model):

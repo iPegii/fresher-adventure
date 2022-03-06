@@ -50,6 +50,23 @@ def permissions_manage():
                 return render_template(
                     "permissions.html", users=users,
                     permission=permission.permission)
+            elif request.method == "POST":
+                new_user_permissions = []
+                permissions = Permission.query.all()
+                for permission in permissions:
+                    permission_data = request.form.get(
+                        f"permission_select{permission.user_id}")
+                    if permission_data is not None:
+                        temp_permission = permission
+                        temp_permission.permission = permission_data
+                        new_user_permissions.append(
+                            temp_permission)
+                    else:
+                        new_user_permissions.append(
+                            permission)
+                permission = new_user_permissions
+                db.session.commit()
+                return redirect("/permissions")
         else:
             return redirect("/")
     else:
@@ -89,21 +106,22 @@ def manage_checkpoint():
                 permission=user_permission.permission)
         if(request.method == "POST"):
             if request.form.get("submit_button") == "save_checkpoint":
-                checkpoint_data = request.form.get(
-                    "checkpoint_select", "")
-                checkpoint_data_filtered = checkpoint_data.split(
-                    ",")
-                user_id = int(checkpoint_data_filtered[0])
-                u_permission = Permission.query.filter(
-                    Permission.user_id == user_id).first()
-                checkpoint_id = None
-                print(checkpoint_data)
-                if checkpoint_data_filtered[1] != "None":
-                    checkpoint_id = int(
-                        checkpoint_data_filtered[1])
-                if u_permission.permission <= 1:
-                    u_permission.permission = 2
-                u_permission.checkpoint_id = checkpoint_id
+                new_user_permissions = []
+                permissions = Permission.query.all()
+                print(request.form)
+                for permission in permissions:
+                    permission_data = request.form.get(
+                        f"checkpoint_select{permission.user_id}")
+                    print(permission_data)
+                    if permission_data is not None:
+                        temp_permission = permission
+                        temp_permission.checkpoint_id = permission_data
+                        new_user_permissions.append(
+                            temp_permission)
+                    else:
+                        new_user_permissions.append(
+                            permission)
+                permission = new_user_permissions
                 db.session.commit()
                 return redirect("/checkpoints/manage")
             else:
@@ -146,9 +164,6 @@ def checkpoint(permission):
         " ORDER BY t.modified_at"
     data = db.session.execute(
         sql, {"checkpoint_id": id}).fetchall()
-    print(data)
-    for r in data:
-        print(r)
     return render_template(
         "checkpoint.html", checkpoint=checkpoint,
         permission=user_permission.permission, data=data)
@@ -195,13 +210,28 @@ def checkpoint_ordering():
         Permission.user_id == session.get("user_id")).first()
     if permission is not None:
         if permission.permission == 1000:
+            checkpoints = Checkpoint.query.all()
             if request.method == "GET":
-                users = User.query.join(Permission).add_columns(
-                    User.id, User.name, Permission.user_id,
-                    Permission.permission).filter(
-                        User.id == Permission.user_id)
                 return render_template(
-                    "permissions.html", users=users,
+                    "checkpoint-order.html",
+                    checkpoints=checkpoints,
+                    permission=permission.permission)
+            elif request.method == "POST":
+                new_checkpoints = []
+                for checkpoint in checkpoints:
+                    checkpoint_data = request.form.get(
+                        f"checkpoint_order{checkpoint.id}")
+                    if checkpoint_data is not None:
+                        temp_checkpoint = checkpoint
+                        temp_checkpoint.order = checkpoint_data
+                        new_checkpoints.append(
+                            temp_checkpoint)
+                    else:
+                        new_checkpoints.append(checkpoint)
+                db.session.commit()
+                return render_template(
+                    "checkpoint-order.html",
+                    checkpoints=checkpoints,
                     permission=permission.permission)
         else:
             return redirect("/")

@@ -13,7 +13,7 @@
                     <li>
                         <div class="form-group mb-2">
                             <span style="overflow-wrap: break-word;max-width: 100%;">{{user.user_name}}</span>
-                            <select class="form-control" name="checkpoint_select">
+                            <select class="form-control" name="checkpoint_select{{user.user_id}}">
                                 {% if user.checkpoint_name == None %}
                                 <option id="default-value" selected disabled value=''>
                                     Ei rastia
@@ -22,15 +22,15 @@
                                 {% for checkpoint in checkpoints%}
                                 {% if checkpoint.name != None %}
                                 {% if user.checkpoint_name != None and checkpoint.name == user.checkpoint_name %}
-                                <option id="user-saved-value" selected value='{{user.user_id}},{{checkpoint.id}}'>
+                                <option id="user-saved-value" selected value={{checkpoint.id}}>
                                     {{user.checkpoint_name}} </option>
                                 {% else %}
-                                <option id="choose-checkpoint" value='{{user.user_id}},{{checkpoint.id}}'>
+                                <option id="choose-checkpoint" value={{checkpoint.id}}>
                                     {{checkpoint.name}}</option>
                                 {% endif %}
                                 {% endif %}
                                 {% endfor %}
-                                <option id="empty-value" value='{{user.user_id}},None'>
+                                <option id="empty-value" value='None'>
                                     Ei rastia
                                 </option>
                             </select>

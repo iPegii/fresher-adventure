@@ -5,31 +5,41 @@
         {% if users %}
         <h2>Käyttäjät</h2>
         <div>
-            <ul style="list-style-type: none;padding: 0; margin: 0;">
-                {% for user in users%}
-                <li>
-                    <div>
-                        <span>{{user.name}}</span>
-                        <select name="checkpoints">
-                            {% if user.permission %}
-                            {% if user.permission == 1 %}
-                            <option selected disabled value={{user.permission}}> Käyttäjä </option>
-                            {% elif user.permission == 2 %}
-                            <option selected disabled value={{user.permission}}> Rastinpitäjä </option>
-                            {% elif user.permission == 1000 %}
-                            <option selected disabled value={{user.permission}}> Ylläpitäjä </option>
-                            {%endif%}
-                            {% else %}
-                            <option disabled selected value> -- Valitse oikeus -- </option>
-                            {% endif %}
-                            <option value=1>Käyttäjä</option>
-                            <option value=2>Rastinpitäjä</option>
-                            <option value=1000>Ylläpitäjä</option>
-                        </select>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
+            <form action="/permissions" method="POST" style="max-width: fit-content;">
+                <input type="hidden" name="csrf_token" value={{csrf_token()}}>
+                <ul style="list-style-type: none;padding: 0; margin: 0;">
+                    {% for user in users%}
+                    <li>
+                        <div>
+                            <span>{{user.name}}</span>
+                            <select name="permission_select{{user.id}}">
+                                {% if user.permission %}
+                                {% if user.permission == 1 %}
+                                <option selected disabled value={{user.permission}}> Käyttäjä
+                                </option>
+                                {% elif user.permission == 2 %}
+                                <option selected disabled value={{user.permission}}> Rastinpitäjä
+                                </option>
+                                {% elif user.permission == 1000 %}
+                                <option selected disabled value={{user.permission}}> Ylläpitäjä
+                                </option>
+                                {%endif%}
+                                {% else %}
+                                <option disabled selected value> -- Valitse oikeus -- </option>
+                                {% endif %}
+                                <option value=1>Käyttäjä</option>
+                                <option value=2>Rastinpitäjä</option>
+                                <option value=1000>Ylläpitäjä</option>
+                            </select>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="display: flex; justify-content: end;">
+                    <button style="margin-top: 1em;" type="submit" name="submit_button" value="save_permissions"
+                        class="btn btn-primary">Tallenna</button>
+                </div>
+            </form>
         </div>
         {% else %}
         <h2>Ei käyttäjiä</h2>

@@ -180,7 +180,6 @@ def checkpoints():
 
         data = []
         for team in teams:
-            print(team.name)
             sql = "SELECT c.id AS checkpoint_id,c.name AS checkpoint_name,"\
                 " t.id AS team_id,t.name AS team_name, "\
                 " p.point_amount AS points,"\

@@ -1,5 +1,7 @@
-from wtforms import StringField, validators, RadioField
+from wtforms import StringField, RadioField
 from wtforms import EmailField, PasswordField, SelectField
+from wtforms.validators import DataRequired, ValidationError
+from wtforms.validators import Length, Email, EqualTo
 from flask_wtf import FlaskForm
 from app.models import Team, Users as User
 
@@ -8,15 +10,15 @@ class RegisterForm(FlaskForm):
     """Register form for the website"""
     username = StringField(
         'Käyttäjätunnus',
-        [validators.Length(min=4, max=25)])
+        [Length(min=4, max=25)])
     email = EmailField(
         'Sähköposti',
-        [validators.Email(), validators.DataRequired()])
+        [Email(), DataRequired()])
     password = PasswordField(
         'Salasana',
-        [validators.Length(min=8, max=26),
-         validators.DataRequired(),
-         validators.EqualTo(
+        [Length(min=8, max=26),
+         DataRequired(),
+         EqualTo(
              'confirm',
              message='Salasanojen pitää olla samat')])
     confirm = PasswordField('Toista salasana')
@@ -26,7 +28,7 @@ class RegisterForm(FlaskForm):
         old_user = User.query.filter(
             (User.name == field.data.name)).first()
         if old_user is not None:
-            raise validators.ValidationError(
+            raise ValidationError(
                 'Käyttäjän nimen pitää olla uniikki')
 
 
@@ -34,30 +36,30 @@ class LoginForm(FlaskForm):
     """Login form for the website"""
     username = StringField(
         'Käyttäjätunnus',
-        [validators.Length(min=4, max=25)])
+        [Length(min=4, max=25)])
     password = PasswordField(
-        'Salasana', [validators.Length(min=8, max=26)])
+        'Salasana', [Length(min=8, max=26)])
 
 
 class CheckpointCreationForm(FlaskForm):
     """Creation of new checkpoints"""
     name = StringField(
         'Rastin nimi',
-        [validators.Length(min=4, max=50)])
+        [Length(min=4, max=50)])
 
 
 class TeamCreationForm(FlaskForm):
     """Creation of new team"""
     name = StringField(
         'Joukkueen nimi',
-        [validators.Length(min=4, max=50),
-         validators.DataRequired()])
+        [Length(min=4, max=50),
+         DataRequired()])
 
     def validate_team_name(form, field):
         old_team = Team.query.filter(
             (Team.name == field.data.name)).first()
         if old_team is not None:
-            raise validators.ValidationError(
+            raise ValidationError(
                 'Joukkueen nimen pitää olla uniikki')
 
 

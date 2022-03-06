@@ -1,20 +1,23 @@
 # Ominaisuuksia
 
 - [x] Käyttäjän luominen  
-- [] Kirjautuminen
-- [] Rastinpitäjien käyttöliittymä  
+  - [] Kirjaudu automaattisesti sisälle   
+- [x] Kirjautuminen
+- [x] Rastinpitäjien käyttöliittymä  
   - [] Nimen ja Kuvauksen lisääminen rastille
-  - [] Pisteiden antaminen rastinkiertäjille
-    - [] Seuraavan rastin sijainnin näkeminen
-- [] Tapahtumavastaavien käyttöliittymä
-  - [] Käyttäjien ylentäminen rastinpitäjiksi
+  - [x] Pisteiden antaminen rastinkiertäjille
+  - [] Seuraavan rastin sijainnin näkeminen
+- [x] Tapahtumavastaavien käyttöliittymä
+  - [x] Käyttäjien ylentäminen rastinpitäjiksi
+  - [x] Joukkueiden lisääminen
   - [] Rastien sijainnin lisääminen
-  - [] Tapahtuman yleisnäkymä
-    - [] Montako ryhmää on käynyt rasteilla
-    - [] Rastinkiertäjien pisteet / paras joukkue
-    - [] Vie pisteet luettavaan tiedostomuotoon
+  - [x] Tapahtuman yleisnäkymä
+   - [] Montako ryhmää on käynyt rasteilla
+   - [] Rastinkiertäjien pisteet / paras joukkue
+   - [] Vie pisteet luettavaan tiedostomuotoon
 
 ## Mahdollisia lisäominaisuuksia
 
 - [] Satunnaistapahtuman lisääminen
 - [] Tapahtumakello, josta näkee tapahtuman keston ja loppumisen
+- [] Parempi palaute käyttäjä virhetilanteissa

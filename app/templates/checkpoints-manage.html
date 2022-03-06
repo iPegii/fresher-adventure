@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Rastien hallinta</h1>
+<h1>Rastien järjestys</h1>
 <div style="display: flex; flex-direction: row; justify-content: space-between;">
     <div name="user panel">
         {% if users %}
@@ -45,43 +45,6 @@
         {% else %}
         <h2>Ei käyttäjiä</h2>
         {% endif %}
-    </div>
-    <div name="checkpoint panel" style="width: 20em;">
-        {% if checkpoints %}
-        <h2 style="margin-left: 0.5em">Rastit</h2>
-        <div>
-            <ul style="list-style-type:disc">
-                {% for checkpoint in checkpoints%}
-                {% if checkpoint.name != None %}
-                <li>
-                    <p style="overflow-wrap: break-word;">{{checkpoint.name}}
-                    </p>
-                </li>
-                {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-        {% else %}
-        <h2 style="text-align: center;">Ei rasteja</h2>
-        {% endif %}
-        <div style="margin: auto;max-width: 80%;">
-            <form action="/checkpoints/manage" method="POST">
-                <input type="hidden" name="csrf_token" value={{csrf_token()}}>
-                <div class="form-group">
-                    {{ checkpoint_adding_form.name.label }}
-                    <div style="flex-direction: row;display:flex;flex-wrap: wrap; align-items: center;">
-                        <div style="flex-basis: 60%;">
-                            {{ checkpoint_adding_form.name(size=20,
-                            class="form-control",
-                            placeholder="Rastin nimi")}}
-                        </div>
-                        <button style="flex-basis: 20%;" type="submit" class="btn" name="new checkpoint">
-                            <i style="color: #2ccc1b;" class="fas fa-plus-circle fa-2x"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 {% endblock %}

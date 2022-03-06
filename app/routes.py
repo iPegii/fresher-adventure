@@ -109,12 +109,16 @@ def manage_checkpoint():
             else:
                 form = CheckpointCreationForm(request.form)
                 checkpoint_name = form.name.data
-                findCheckpoint = Checkpoint.query.filter(
-                    (Checkpoint.name == checkpoint_name)).first()
+                checkpoints = Checkpoint.query.all()
+                findCheckpoint = 0
+                for checkpoint in checkpoints:
+                    if checkpoint.name == checkpoint_name:
+                        findCheckpoint = checkpoint
                 if findCheckpoint is None:
                     new_checkpoint = Checkpoint(
-                        checkpoint_name, "", False,
-                        None, modified_at=db.func.now(),
+                        checkpoint_name, "", False, None,
+                        checkpoints.length + 1,
+                        modified_at=db.func.now(),
                         created_at=db.func.now())
                     db.session.add(new_checkpoint)
                     db.session.commit()
@@ -182,6 +186,28 @@ def checkpoints():
             permission=user_permission.permission)
     else:
         redirect("/")
+
+
+@app.route("/checkpoint-order", methods=["GET", "POST"])
+def checkpoint_ordering():
+
+    permission = Permission.query.filter(
+        Permission.user_id == session.get("user_id")).first()
+    if permission is not None:
+        if permission.permission == 1000:
+            if request.method == "GET":
+                users = User.query.join(Permission).add_columns(
+                    User.id, User.name, Permission.user_id,
+                    Permission.permission).filter(
+                        User.id == Permission.user_id)
+                return render_template(
+                    "permissions.html", users=users,
+                    permission=permission.permission)
+        else:
+            return redirect("/")
+    else:
+        session["next_url"] = request.path
+        return redirect("/")
 
 
 @ app.route("/teams/manage", methods=["POST", "GET"])
@@ -344,16 +370,3 @@ def login():
 @app.errorhandler(csrf_handler.CSRFError)
 def csrf_error(reason):
     return render_template('error.html', reason=reason)
-
-
-'''
-
-                sql = """UPDATE permission SET checkpoint_id =: checkpoint_id
-                , permission = : permission WHERE user_id = : user_id"""
-                db.session.execute(
-                    sql,
-                    {"checkpoint_id": checkpoint_id,
-                     "permission": temp_user_permission.permission,
-                     "user_id": user_id})
-
-'''

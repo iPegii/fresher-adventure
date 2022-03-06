@@ -79,8 +79,9 @@ class Checkpoint(db.Model):
     can_be_visible = db.Column(
         db.Boolean, nullable=False, default=False)
     location_id = db.Column(
-        db.Integer, db.ForeignKey('location.id'),
-        nullable=False)
+        db.Integer, nullable=False)
+    order = db.Column(
+        db.Integer, nullable=False, default=False)
     modified_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=False, onupdate=db.func.now())
@@ -90,11 +91,12 @@ class Checkpoint(db.Model):
 
     def __init__(
             self, name, description, can_be_visible,
-            location_id, modified_at, created_at):
+            location_id, order, modified_at, created_at):
         self.name = name
         self.description = description
         self.can_be_visible = can_be_visible
         self.location_id = location_id
+        self.order = order
         self.modified_at = modified_at
         self.created_at = created_at
 

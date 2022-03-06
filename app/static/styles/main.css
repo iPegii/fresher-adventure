@@ -3,3 +3,9 @@ input[type="radio"] {
     -webkit-transform: scale(3); /* Chrome, Safari, Opera */
     transform: scale(3);
 }
+
+@media screen and (max-width: 700px) {
+    .base-template {
+      margin: 2em 1rem 0em 1rem !important;
+    }
+  }

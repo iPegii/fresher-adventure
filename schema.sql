@@ -20,6 +20,7 @@ CREATE TABLE checkpoint (
     description VARCHAR(1000),
     can_be_visible boolean DEFAULT False NOT NULL,
     location_id INTEGER,
+    order INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(),
     modified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp()
 );

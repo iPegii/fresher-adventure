@@ -80,7 +80,7 @@ class Checkpoint(db.Model):
         db.Boolean, nullable=False, default=False)
     location_id = db.Column(
         db.Integer, nullable=False)
-    order = db.Column(
+    order_number = db.Column(
         db.Integer, nullable=False,
         default=False)
     modified_at = db.Column(
@@ -92,19 +92,20 @@ class Checkpoint(db.Model):
 
     def __init__(
             self, name, description, can_be_visible,
-            location_id, order, modified_at, created_at):
+            location_id, order_number, modified_at,
+            created_at):
         self.name = name
         self.description = description
         self.can_be_visible = can_be_visible
         self.location_id = location_id
-        self.order = order
+        self.order_number = order_number
         self.modified_at = modified_at
         self.created_at = created_at
 
     def __repr__(self):
         return f"""<Checkpoint> name: {self.name},
         description: {self.description},
-        visible: {self.can_be_visible}, order: {self.order}"""
+        visible: {self.can_be_visible}, order_number: {self.order_number}"""
 
 
 class Point(db.Model):

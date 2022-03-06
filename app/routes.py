@@ -108,11 +108,9 @@ def manage_checkpoint():
             if request.form.get("submit_button") == "save_checkpoint":
                 new_user_permissions = []
                 permissions = Permission.query.all()
-                print(request.form)
                 for permission in permissions:
                     permission_data = request.form.get(
                         f"checkpoint_select{permission.user_id}")
-                    print(permission_data)
                     if permission_data is not None:
                         temp_permission = permission
                         temp_permission.checkpoint_id = permission_data
@@ -194,7 +192,11 @@ def checkpoints():
                 " ORDER BY checkpoint_id"
             result = db.session.execute(
                 sql, {"team_id": team.id, "team_name": team.name}).fetchall()
-            data.insert(team.id, result)
+            sql = "SELECT SUM(p.point_amount) as points_sum FROM point p "\
+                "WHERE p.team_id=:team_id"
+            result2 = db.session.execute(
+                sql, {"team_id": team.id}).fetchall()
+            data.insert(team.id, [result, result2])
         return render_template(
             "checkpoints.html", data=data,
             checkpoint_data=checkpoints, teams=teams,
@@ -223,7 +225,7 @@ def checkpoint_ordering():
                         f"checkpoint_order{checkpoint.id}")
                     if checkpoint_data is not None:
                         temp_checkpoint = checkpoint
-                        temp_checkpoint.order = checkpoint_data
+                        temp_checkpoint.order_number = checkpoint_data
                         new_checkpoints.append(
                             temp_checkpoint)
                     else:

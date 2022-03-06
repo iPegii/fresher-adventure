@@ -9,19 +9,21 @@
                 {% for checkpoint in checkpoint_data %}
                 <th scope="col">{{checkpoint.name}}</th>
                 {% endfor %}
+                <th scope="col">Summa</th>
             </tr>
         </thead>
         <tbody>
             {% for checkpoint in data %}
             <tr>
-                <th scope="row">{{checkpoint[0].team_name}}</th>
-                {% for team in checkpoint %}
+                <th scope="row">{{checkpoint[0][0].team_name}}</th>
+                {% for team in checkpoint[0] %}
                 {% if team.points != None %}
                 <td style="border-radius: 8px;background-color: #0a9100a8;">{{team.points}}</td>
                 {% else %}
                 <td>Ei käyty</td>
                 {% endif %}
                 {% endfor %}
+                <td style="border-left: solid black 2px;">{{checkpoint[1][0].points_sum}}</td>
             </tr>
             {% endfor %}
         </tbody>

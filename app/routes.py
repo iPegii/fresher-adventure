@@ -126,14 +126,18 @@ def manage_checkpoint():
                 form = CheckpointCreationForm(request.form)
                 checkpoint_name = form.name.data
                 checkpoints = Checkpoint.query.all()
-                findCheckpoint = 0
+                findCheckpoint = None
                 for checkpoint in checkpoints:
                     if checkpoint.name == checkpoint_name:
                         findCheckpoint = checkpoint
                 if findCheckpoint is None:
+                    checkpoints_length = 0
+                    if checkpoints is not None:
+                        checkpoints_length = len(
+                            checkpoints) + 1
                     new_checkpoint = Checkpoint(
                         checkpoint_name, "", False, None,
-                        checkpoints.length + 1,
+                        checkpoints_length,
                         modified_at=db.func.now(),
                         created_at=db.func.now())
                     db.session.add(new_checkpoint)
